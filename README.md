@@ -1,8 +1,11 @@
 # 📚 Daneshyar – Modern Persian Educational Platform
 
-Daneshyar is a modern **Persian (RTL) educational mobile app** designed for discovering courses, learning inside the app, and managing the full student journey — from **secure mobile login** to **in‑app purchases**, **chat**, and **progress tracking**.
+Daneshyar is a modern **Persian (RTL) educational mobile app** designed for discovering courses,
+learning inside the app, and managing the full student journey — from **secure mobile login** to *
+*in‑app purchases**, **chat**, and **progress tracking**.
 
-> Built with **Flutter** and ready for Android & iOS. State management via **Riverpod**; networking via **Dio**; persists lightweight data with **SharedPreferences**.
+> Built with **Flutter** and ready for Android & iOS. State management via **Riverpod**; networking
+> via **Dio**; persists lightweight data with **SharedPreferences**.
 
 ---
 
@@ -26,9 +29,9 @@ Daneshyar is a modern **Persian (RTL) educational mobile app** designed for disc
 
 ## 🖼️ Screenshots
 
-| Onboarding                                | Login                                                                                              | Courses                                                                                                                                            | Home                          | Search                                                                                                  | Chat                                                                                        |
-|-------------------------------------------|----------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
-| ![Onboarding](screenshots/onboarding.png) | ![Login](screenshots/login.png) ![Login](screenshots/login2.png)  ![Login](screenshots/login3.png) | ![Courses](screenshots/courses.png) ![Courses](screenshots/courses2.png) ![Courses](screenshots/courses3.png) ![Courses](screenshots/courses4.png) | ![Home](screenshots/home.png) | ![Search](screenshots/search.png) ![Search](screenshots/search2.png) ![Search](screenshots/search3.png) | ![Chat](screenshots/chat.png) ![Chat](screenshots/chat2.png) ![Chat](screenshots/chat3.png) |
+| Onboarding                                                                           | Login                                                            | Courses                                                                  | Home                                                         | Search                                                               | Chat                                                         |
+|--------------------------------------------------------------------------------------|------------------------------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------------------------|----------------------------------------------------------------------|--------------------------------------------------------------|
+| ![Onboarding](screenshots/onboarding.png) ![Onboarding](screenshots/onboarding2.png) | ![Login](screenshots/login.png) ![Login](screenshots/login2.png) | ![Courses](screenshots/courses.png) ![Courses](screenshots/courses2.png) | ![Home](screenshots/home.png) ![Home](screenshots/home2.png) | ![Search](screenshots/search.png) ![Search](screenshots/search2.png) | ![Chat](screenshots/chat.png) ![Chat](screenshots/chat2.png) |
 
 > Replace the images above with real screenshots from your build.
 
@@ -100,7 +103,8 @@ lib/
 * **(Optional)** **WebSocket/Socket.io** for real‑time chat
 * **(Optional)** **FCM/OneSignal** for push notifications
 
-> Note: Integrations for chat and notifications depend on your backend. The app is structured to plug these in cleanly.
+> Note: Integrations for chat and notifications depend on your backend. The app is structured to
+> plug these in cleanly.
 
 ---
 
