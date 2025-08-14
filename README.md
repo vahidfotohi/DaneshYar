@@ -49,7 +49,7 @@ learning inside the app, and managing the full student journey — from **secure
 
 ```bash
 # Clone
-git clone https://github.com/<username>/daneshyar.git
+git clone https://github.com/<vahidfotohi>/daneshyar.git
 cd daneshyar
 
 # Install deps
@@ -195,5 +195,10 @@ Distributed under the **MIT License**. See `LICENSE` for details.
 
 **Vahid Fotouhi**
 
-* GitHub: [https://github.com/](https://github.com/)<username>
-* Email: [your@email](mailto:your@email)
+* GitHub: [https://github.com/](https://github.com/)<vahidfotohi>
+* Email: [vahidfotohi0@email](mailto:your@email)
+
+**Mohammad Moradzade**
+
+* GitHub: [https://github.com/](https://github.com/)<mohammad-moradzade>
+* Email: [mohammadmoradzade.dev@email](mailto:your@email)
