@@ -46,6 +46,7 @@ dependencies:
   path_provider: ^2.1.5
   path: ^1.8.3
   glass_kit: ^4.0.1
+  flutter_secure_storage: ^9.2.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
