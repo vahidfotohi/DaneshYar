@@ -18,22 +18,23 @@ class OtpScreen extends ConsumerStatefulWidget {
 
 class _OtpScreenState extends ConsumerState<OtpScreen> {
   late StreamController<ErrorAnimationType> errorController;
+  late final otpViewModel = ref.read(otpViewModelProvider.notifier);
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // ارسال کد تایید در هنگام ورود به صفحه
-      ref.read(otpViewModelProvider.notifier).resendCode(widget.phoneNumber);
+      otpViewModel.resendCode(widget.phoneNumber);
     });
     errorController = StreamController<ErrorAnimationType>();
   }
 
   @override
   void dispose() {
-    super.dispose();
-    ref.read(otpViewModelProvider.notifier).stopTimer();
+    otpViewModel.stopTimer();
     errorController.close();
+    super.dispose();
   }
 
   // final String _otpCode = "";
@@ -41,7 +42,6 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     final otpState = ref.watch(otpViewModelProvider);
-    final otpViewModel = ref.read(otpViewModelProvider.notifier);
 
     final themeData = Theme.of(context).textTheme;
     final themeColor = Theme.of(context).colorScheme;
@@ -200,9 +200,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                           children: [
                             TextButton.icon(
                               onPressed: () async {
-                                await ref
-                                    .read(otpViewModelProvider.notifier)
-                                    .resendCode(widget.phoneNumber);
+                                await otpViewModel.resendCode(widget.phoneNumber);
                               },
                               icon: const Icon(Icons.refresh),
                               label: Text(
@@ -223,21 +221,16 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                       ? null
                       : () async {
                           await otpViewModel.verifyOtp();
-                          if (!mounted) return;
-                          final isCompleted = ref
-                              .read(otpViewModelProvider)
-                              .isVerified;
-                          final hasError = ref
-                              .read(otpViewModelProvider)
-                              .hasError;
-                          if (isCompleted && context.mounted) {
+                          if (!context.mounted) return;
+                          
+                          if (otpState.isVerified) {
                             otpViewModel.stopTimer();
                             Navigator.pushReplacementNamed(
                               context,
                               "/completeProfile",
                               arguments: {'phoneNumber': widget.phoneNumber},
                             );
-                          } else if (hasError) {
+                          } else if (otpState.hasError) {
                             errorController.add(ErrorAnimationType.shake);
                           }
                           // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
