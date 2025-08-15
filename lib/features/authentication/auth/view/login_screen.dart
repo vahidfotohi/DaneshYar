@@ -70,11 +70,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   size: 24,
                   color: Colors.black,
                 ),
-                error: viewModel.phoneError!.isNotEmpty
+                error: viewModel.hasError && viewModel.errorMessage != null
                     ? Align(
                         alignment: Alignment.centerRight,
                         child: Text(
-                          viewModel.phoneError!,
+                          viewModel.errorMessage!,
                           textDirection: TextDirection.rtl,
                           style: const TextStyle(color: Colors.red),
                         ),
@@ -135,18 +135,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(
-                    viewModel.phoneNumber.length < 11
+                    viewModel.phoneNumber.length < 11 || viewModel.isLoading
                         ? Colors.grey
                         : Theme.of(context).colorScheme.primaryFixed,
                   ),
                 ),
 
-                onPressed: () {
-                  if (viewModel.phoneNumber.length >= 11) {
-                    viewModelNotifier.sendOtp(context);
-                  }
-                },
-                child: const Text("ثبت شماره موبایل"),
+                onPressed: viewModel.isLoading
+                    ? null
+                    : () {
+                        if (viewModel.phoneNumber.length >= 11) {
+                          viewModelNotifier.sendOtp(context);
+                        }
+                      },
+                child: viewModel.isLoading
+                    ? CircularProgressIndicator(color: Colors.white)
+                    : const Text("ثبت شماره موبایل"),
               ),
             ),
           ],

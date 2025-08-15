@@ -5,6 +5,7 @@ class OtpState {
   final bool isVerified;
   final bool hasError;
   final bool isResendAvailable;
+  final String? errorMessage;
 
   const OtpState({
     required this.isResendAvailable,
@@ -13,6 +14,7 @@ class OtpState {
     required this.isLoading,
     required this.isVerified,
     required this.hasError,
+    this.errorMessage,
   });
 
   factory OtpState.initial() {
@@ -22,7 +24,8 @@ class OtpState {
       isLoading: false,
       isVerified: false,
       hasError: false,
-      isResendAvailable: false
+      isResendAvailable: false,
+      errorMessage: null
     );
   }
 
@@ -32,7 +35,8 @@ class OtpState {
     bool? isLoading,
     bool? isVerified,
     bool? hasError,
-    bool? isResendAvailable
+    bool? isResendAvailable,
+    String? errorMessage
   }) {
     return OtpState(
       otpCode: otpCode ?? this.otpCode,
@@ -40,7 +44,8 @@ class OtpState {
       isLoading: isLoading ?? this.isLoading,
       isVerified: isVerified ?? this.isVerified,
       hasError: hasError ?? this.hasError,
-      isResendAvailable : isResendAvailable ?? this.isResendAvailable
+      isResendAvailable: isResendAvailable ?? this.isResendAvailable,
+      errorMessage: errorMessage ?? this.errorMessage
     );
   }
 }

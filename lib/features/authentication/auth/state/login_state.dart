@@ -1,19 +1,36 @@
 class LoginState {
   final String phoneNumber;
-  final String? phoneError;
+  final String? errorMessage;
   final bool hasError;
+  final bool isLoading;
 
-  LoginState({this.phoneNumber = "", this.phoneError, this.hasError = false});
+  const LoginState({
+    required this.phoneNumber, 
+    this.errorMessage, 
+    required this.hasError,
+    required this.isLoading
+  });
+
+  factory LoginState.initial() {
+    return const LoginState(
+      phoneNumber: "",
+      isLoading: false,
+      hasError: false,
+      errorMessage: null,
+    );
+  }
 
   LoginState copyWith({
     String? phoneNumber,
-    String? phoneError,
+    String? errorMessage,
     bool? hasError,
+    bool? isLoading,
   }) {
     return LoginState(
       phoneNumber: phoneNumber ?? this.phoneNumber,
-      phoneError: phoneError ?? this.phoneError,
+      errorMessage: errorMessage ?? this.errorMessage,
       hasError: hasError ?? this.hasError,
+      isLoading: isLoading ?? this.isLoading,
     );
   }
 }

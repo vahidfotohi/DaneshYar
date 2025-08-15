@@ -23,9 +23,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(otpViewModelProvider.notifier).startTimer();
+      // ارسال کد تایید در هنگام ورود به صفحه
+      ref.read(otpViewModelProvider.notifier).resendCode(widget.phoneNumber);
     });
-    // ref.read(otpViewModelProvider.notifier).startTimer();
     errorController = StreamController<ErrorAnimationType>();
   }
 
@@ -138,7 +138,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(
-                    "کد وارد شده صحیح نیست.",
+                    otpState.errorMessage ?? "کد وارد شده صحیح نیست.",
                     style: TextStyle(color: themeColor.error),
                     textDirection: TextDirection.rtl,
                   ),
@@ -222,9 +222,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                   onPressed: otpState.isLoading
                       ? null
                       : () async {
-                          await otpViewModel.verifyOtp(
-                            phoneNumber: widget.phoneNumber,
-                          );
+                          await otpViewModel.verifyOtp();
                           if (!mounted) return;
                           final isCompleted = ref
                               .read(otpViewModelProvider)
