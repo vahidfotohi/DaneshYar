@@ -1,8 +1,8 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/auth/auth_repository.dart';
-import '../../../../core/network/api_client.dart';
+import '../../repository/auth_repository.dart';
+import '../../../../../core/network/api_client.dart';
 import '../state/otp_state.dart';
 import '../viewmodel/otp_viewmodel.dart';
 

@@ -2,9 +2,9 @@ import 'package:daneshyar/features/home/view/widgets/category/all_categories_scr
 import 'package:daneshyar/features/onboarding/view/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
-import '../../features/authentication/auth/view/complete_profile_screen.dart';
-import '../../features/authentication/auth/view/login_screen.dart';
-import '../../features/authentication/auth/view/otp_screen.dart';
+import '../../features/authentication/auth/complete_profile/view/complete_profile_screen.dart';
+import '../../features/authentication/auth/login/view/login_screen.dart';
+import '../../features/authentication/auth/otp/view/otp_screen.dart';
 import '../../initial_decider_screen.dart';
 import 'main_bottom_nav.dart';
 

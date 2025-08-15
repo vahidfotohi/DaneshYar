@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../core/auth/auth_repository.dart';
-import '../../../../core/network/api_client.dart';
-import '../../../../core/network/error_mapper.dart';
+import '../../repository/auth_repository.dart';
+import '../../../../../core/network/api_client.dart';
+import '../../../../../core/network/error_mapper.dart';
 
 import '../state/otp_state.dart';
 

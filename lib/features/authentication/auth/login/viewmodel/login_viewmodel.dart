@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/auth/auth_repository.dart';
-import '../../../../core/network/error_mapper.dart';
+import '../../repository/auth_repository.dart';
+import '../../../../../core/network/error_mapper.dart';
 import '../state/login_state.dart';
 
 class LoginViewmodel extends StateNotifier<LoginState> {

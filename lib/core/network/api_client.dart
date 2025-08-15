@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import '../../features/authentication/auth/service/auth_service.dart';
 import 'auth_interceptor.dart';
 import 'token_storage.dart';
-import '../auth/auth_service.dart';
 
 class ApiClient {
   static final ApiClient _instance = ApiClient._internal();

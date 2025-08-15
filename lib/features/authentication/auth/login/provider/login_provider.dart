@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/auth/auth_repository.dart';
+import '../../repository/auth_repository.dart';
 import '../state/login_state.dart';
 import '../viewmodel/login_viewmodel.dart';
 

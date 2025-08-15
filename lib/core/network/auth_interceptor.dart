@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
+import '../../features/authentication/auth/service/auth_service.dart';
 import 'token_storage.dart';
-import '../auth/auth_service.dart';
+
 
 class AuthInterceptor extends QueuedInterceptorsWrapper {
   final TokenStorage storage;
@@ -73,7 +74,7 @@ class AuthInterceptor extends QueuedInterceptorsWrapper {
 /// اکستنشن کمکی برای Retry کامل همان درخواست
 extension _RetryRequest on RequestOptions {
   Future<Response<dynamic>> _retry() {
-    final dio = this.extra['dio_instance'] as Dio?;
+    final dio = extra['dio_instance'] as Dio?;
     if (dio == null) {
       // اگر dio را تزریق نکرده باشیم، از owner همان err استفاده می‌کنیم
       // (در api_client این extra را ست می‌کنیم)
