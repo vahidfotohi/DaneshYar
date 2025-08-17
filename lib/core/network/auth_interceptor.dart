@@ -2,22 +2,11 @@ import 'package:dio/dio.dart';
 import '../../features/authentication/auth/service/auth_service.dart';
 import 'token_storage.dart';
 
-
 class AuthInterceptor extends QueuedInterceptorsWrapper {
   final TokenStorage storage;
   final AuthService authService;
 
-  AuthInterceptor({
-    required this.storage,
-    required this.authService,
-  });
-
-  bool _isAuthFree(String path) {
-    // مسیرهای که نباید Authorization داشته باشند
-    return path.contains('/auth/login') ||
-        path.contains('/auth/register') ||
-        path.contains('/client/refresh');
-  }
+  AuthInterceptor({required this.storage, required this.authService});
 
   bool _shouldTryRefresh(DioException error) {
     final status = error.response?.statusCode ?? 0;
@@ -25,9 +14,16 @@ class AuthInterceptor extends QueuedInterceptorsWrapper {
     return status == 401 && !_isAuthFree(path);
   }
 
+  bool _isAuthFree(String path) {
+    return path.contains('/auth/login') || path.contains('/auth/register');
+    // path.contains('/client/refresh');
+  }
+
   @override
   Future<void> onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     if (!_isAuthFree(options.path)) {
       final access = await storage.readAccessToken();
       if (access != null) {
@@ -39,18 +35,18 @@ class AuthInterceptor extends QueuedInterceptorsWrapper {
 
   @override
   Future<void> onError(
-      DioException err, ErrorInterceptorHandler handler) async {
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     if (_shouldTryRefresh(err)) {
       try {
-        // تلاش برای رفرش
         await authService.refreshTokenIfNeeded();
 
-        // اجرای مجدد همان درخواست با توکن جدید
         final newAccess = await storage.readAccessToken();
-        final ro = err.requestOptions;
+        final requestOption = err.requestOptions;
 
-        // بروزرسانی هدر
-        final newHeaders = Map<String, dynamic>.from(ro.headers);
+
+        final newHeaders = Map<String, dynamic>.from(requestOption.headers);
         if (newAccess != null) {
           newHeaders['Authorization'] = 'Bearer $newAccess';
         }
@@ -61,7 +57,6 @@ class AuthInterceptor extends QueuedInterceptorsWrapper {
 
         return handler.resolve(retryResponse);
       } catch (_) {
-        // شکست رفرش → پاک‌سازی و عبور خطا
         await authService.logout();
         return handler.next(err);
       }
@@ -69,6 +64,7 @@ class AuthInterceptor extends QueuedInterceptorsWrapper {
 
     handler.next(err);
   }
+
 }
 
 /// اکستنشن کمکی برای Retry کامل همان درخواست

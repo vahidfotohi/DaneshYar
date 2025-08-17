@@ -3,22 +3,38 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../../core/utils/validators.dart';
 import '../../repository/auth_repository.dart';
-import '../../../../../core/network/api_client.dart';
 import '../../../../../core/network/error_mapper.dart';
 
 import '../state/otp_state.dart';
 
 class OtpViewmodel extends StateNotifier<OtpState> {
   final AuthRepository _authRepository;
-  final ApiClient _apiClient;
-  String? _loginCode;
-  
-  OtpViewmodel(this._authRepository, this._apiClient) : super(OtpState.initial());
+  final String phoneNumber;
+
+  String _loginCode;
+
   Timer? _timer;
 
-  void updateOtp(String value) {
-    state = state.copyWith(otpCode: value, hasError: false, errorMessage: null);
+  OtpViewmodel({
+    required AuthRepository authRepository,
+    required this.phoneNumber,
+    required String loginCode,
+  }) : _authRepository = authRepository,
+       _loginCode = loginCode,
+       super(OtpState.initial());
+
+  void initialize() {
+    startTimer();
+  }
+
+  void onOtpChanged(String value) {
+    state = state.copyWith(
+      otpCode: value,
+      hasError: false,
+      clearErrorMessage: true,
+    );
   }
 
   void startTimer() {
@@ -34,7 +50,7 @@ class OtpViewmodel extends StateNotifier<OtpState> {
       }
     });
   }
-  
+
   void setLoginCode(String loginCode) {
     _loginCode = loginCode;
   }
@@ -44,8 +60,27 @@ class OtpViewmodel extends StateNotifier<OtpState> {
   }
 
   Future<void> verifyOtp() async {
-    state = state.copyWith(isLoading: true, hasError: false, errorMessage: null);
+    final validationError = AppValidators.validateOtpCode(state.otpCode);
+    if (validationError != null) {
+      state = state.copyWith(
+        hasError: true,
+        errorMessage: validationError,
+        isLoading: false,
+      );
+      return;
+    }
+    state = state.copyWith(
+      isLoading: true,
+      hasError: false,
+      clearErrorMessage: true,
+    );
+
     try {
+      await _authRepository.verifyOtpAndLogin(
+        code: state.otpCode,
+        loginCode: _loginCode,
+      );
+      state = state.copyWith(isVerified: true, isLoading: false);
       // کد ثابت 111111 برای ورود
       if (state.otpCode == "111111") {
         // ذخیره وضعیت ورود کاربر
@@ -54,20 +89,10 @@ class OtpViewmodel extends StateNotifier<OtpState> {
         state = state.copyWith(isVerified: true, isLoading: false);
         return;
       }
-      
-      if (_loginCode == null) {
-        throw Exception('کد ورود نامعتبر است. لطفا دوباره تلاش کنید');
-      }
-      
-      await _apiClient.authService.login(
-        code: state.otpCode,
-        loginCode: _loginCode!,
-      );
-      
-      // ذخیره وضعیت ورود کاربر
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLoggedIn', true);
-      state = state.copyWith(isVerified: true, isLoading: false);
+      //
+      // if (_loginCode == null) {
+      //   throw Exception('کد ورود نامعتبر است. لطفا دوباره تلاش کنید');
+      // }
     } catch (e) {
       String errorMessage = 'خطا در تایید کد';
       if (e is PrettyError) {
@@ -76,19 +101,26 @@ class OtpViewmodel extends StateNotifier<OtpState> {
         errorMessage = e.toString().replaceAll('Exception: ', '');
       }
       state = state.copyWith(
-        hasError: true, 
+        hasError: true,
         isLoading: false,
-        errorMessage: errorMessage
+        errorMessage: errorMessage,
       );
     }
   }
 
   Future<void> resendCode(String phoneNumber) async {
-    state = state.copyWith(isResendAvailable: false, hasError: false, errorMessage: null);
+    state = state.copyWith(
+      isResendAvailable: false,
+      isLoading: true,
+      hasError: false,
+      errorMessage: null,
+    );
     try {
-      // برای تست، کد ورود را به 111111 تنظیم می‌کنیم
-      // در حالت واقعی، از سرور دریافت می‌شود
-      _loginCode = await _apiClient.authService.sendCode(phoneNumber: phoneNumber);
+      final newLoginCode = await _authRepository.sendCode(
+        phoneNumber: phoneNumber,
+      );
+      _loginCode = newLoginCode;
+      state = state.copyWith(isLoading: false);
       startTimer();
     } catch (e) {
       String errorMessage = 'خطا در ارسال مجدد کد';
@@ -98,10 +130,17 @@ class OtpViewmodel extends StateNotifier<OtpState> {
         errorMessage = e.toString().replaceAll('Exception: ', '');
       }
       state = state.copyWith(
-        hasError: true, 
+        hasError: true,
+        isLoading: false,
         errorMessage: errorMessage,
-        isResendAvailable: true
+        isResendAvailable: true,
       );
     }
+  }
+
+  @override
+  void dispose() {
+    stopTimer();
+    super.dispose();
   }
 }

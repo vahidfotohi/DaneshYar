@@ -1,23 +1,20 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../repository/auth_repository.dart';
-import '../../../../../core/network/api_client.dart';
+import '../../login/provider/send_code_provider.dart';
 import '../state/otp_state.dart';
 import '../viewmodel/otp_viewmodel.dart';
 
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepository();
-});
-
-final apiClientProvider = Provider<ApiClient>((ref) {
-  return ApiClient();
-});
-
-final otpViewModelProvider = StateNotifierProvider<OtpViewmodel, OtpState>(
-  (ref) {
-    final authRepository = ref.watch(authRepositoryProvider);
-    final apiClient = ref.watch(apiClientProvider);
-    return OtpViewmodel(authRepository, apiClient);
-  },
-);
+final otpViewModelProvider =
+    StateNotifierProvider.family<OtpViewmodel, OtpState, Map<String, dynamic>>((
+      ref,
+      arguments,
+    ) {
+      final authRepository = ref.watch(authRepositoryProvider);
+      final phoneNumber = arguments['phoneNumber']!;
+      final loginCode = arguments['loginCode']!;
+      return OtpViewmodel(
+        authRepository: authRepository,
+        phoneNumber: phoneNumber,
+        loginCode: loginCode,
+      );
+    });

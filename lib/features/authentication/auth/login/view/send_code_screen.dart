@@ -1,21 +1,26 @@
 import 'package:daneshyar/core/constants/constants.dart';
+import 'package:daneshyar/core/routes/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../provider/login_provider.dart';
+import '../../../../../core/utils/validators.dart';
+import '../provider/send_code_provider.dart';
+import '../state/send_code_state.dart';
+import '../viewmodel/send_code_viewmodel.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+class SendCodeScreen extends ConsumerStatefulWidget {
+  const SendCodeScreen({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<SendCodeScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _LoginScreenState extends ConsumerState<SendCodeScreen> {
   late TextEditingController _phoneController;
+
   @override
   void initState() {
-    final phone = ref.read(loginViewModelProvider).phoneNumber;
+    final phone = ref.read(sendCodeViewModelProvider).phoneNumber;
     _phoneController = TextEditingController(text: phone);
     super.initState();
   }
@@ -27,9 +32,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   @override
-  Widget build(BuildContext context,) {
-    final viewModel = ref.watch(loginViewModelProvider);
-    final viewModelNotifier = ref.read(loginViewModelProvider.notifier);
+  Widget build(BuildContext context) {
+    ref.listen(sendCodeViewModelProvider, (previous, next) {
+      if (next.navigateToOtp) {
+        Navigator.pushNamed(
+          context,
+          AppRoute.otp,
+          arguments: {
+            'phoneNumber': next.phoneNumber,
+            'loginCode': next.loginCode,
+          },
+        );
+        ref.read(sendCodeViewModelProvider.notifier).onNavigationComplete();
+      }
+    });
+    final state = ref.watch(sendCodeViewModelProvider);
+    final notifier = ref.read(sendCodeViewModelProvider.notifier);
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.all(24),
@@ -61,7 +79,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               keyboardType: TextInputType.phone,
               textDirection: TextDirection.rtl,
               controller: _phoneController,
-              onChanged: (value) => viewModelNotifier.onPhoneChanged(value),
+              onChanged: (value) => notifier.onPhoneChanged(value),
               decoration: InputDecoration(
                 hintText: "09********",
                 hintStyle: const TextStyle(color: AppColors.hintText),
@@ -70,19 +88,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   size: 24,
                   color: Colors.black,
                 ),
-                error: viewModel.hasError && viewModel.errorMessage != null
-                    ? Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          viewModel.errorMessage!,
-                          textDirection: TextDirection.rtl,
-                          style: const TextStyle(color: Colors.red),
+                error: state.hasError && state.errorMessage != null
+                    ? Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            state.errorMessage!,
+                            textDirection: TextDirection.rtl,
+                            style: const TextStyle(color: Colors.red , fontSize: 12),
+                          ),
                         ),
-                      )
+                    )
                     : null,
 
-
-                prefixIcon: viewModel.phoneNumber.length >= 11
+                prefixIcon: state.phoneNumber.length >= 11
                     ? Container(
                         margin: const EdgeInsets.symmetric(vertical: 13),
                         width: 10,
@@ -96,7 +116,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           constraints: const BoxConstraints(),
                           onPressed: () {
                             _phoneController.clear();
-                            viewModelNotifier.onPhoneChanged('');
+                            notifier.onPhoneChanged('');
                           },
                           icon: const Icon(
                             Icons.clear_rounded,
@@ -135,21 +155,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: WidgetStatePropertyAll(
-                    viewModel.phoneNumber.length < 11 || viewModel.isLoading
+                    state.phoneNumber.length < 11 || state.isLoading
                         ? Colors.grey
                         : Theme.of(context).colorScheme.primaryFixed,
                   ),
                 ),
 
-                onPressed: viewModel.isLoading
-                    ? null
-                    : () {
-                        if (viewModel.phoneNumber.length >= 11) {
-                          viewModelNotifier.sendOtp(context);
-                        }
-                      },
-                child: viewModel.isLoading
-                    ? CircularProgressIndicator(color: Colors.white)
+                onPressed: state.isLoading ? null : notifier.sendOtp,
+                child: state.isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
                     : const Text("ثبت شماره موبایل"),
               ),
             ),
@@ -158,4 +172,71 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       ),
     );
   }
+}
+
+Widget _buildHeader(BuildContext context) {
+  return Text(
+    "برای ورود یا ثبت‌نام، شماره موبایل خود را وارد کنید.",
+    style: Theme.of(context).textTheme.headlineMedium,
+    textAlign: TextAlign.center,
+    textDirection: TextDirection.rtl,
+  );
+}
+
+Widget _buildPhoneNumberField(
+  BuildContext context,
+  SendCodeState state,
+  SendCodeViewmodel notifier,
+) {
+  return TextField(
+    maxLength: 11,
+    textAlign: TextAlign.center,
+    keyboardType: TextInputType.phone,
+    onChanged: notifier.onPhoneChanged,
+    decoration: InputDecoration(
+      labelText: "شماره موبایل",
+      hintText: "09123456789",
+      // ۶. استفاده از errorText برای نمایش خطا
+      errorText: state.hasError ? state.errorMessage : null,
+    ),
+  );
+}
+
+Widget _buildTermsAndConditions(BuildContext context) {
+  return RichText(
+    textAlign: TextAlign.center,
+    textDirection: TextDirection.rtl,
+    text: TextSpan(
+      style: Theme.of(context).textTheme.bodyMedium,
+      children: [
+        const TextSpan(text: "با ورود و یا ثبت نام در دانشیار، شما "),
+        TextSpan(
+          text: "شرایط و قوانین ",
+          style: TextStyle(color: Theme.of(context).colorScheme.primary),
+        ),
+        const TextSpan(text: "ما را می‌پذیرید."),
+      ],
+    ),
+  );
+}
+
+Widget _buildSubmitButton(
+  BuildContext context,
+  SendCodeState state,
+  SendCodeViewmodel notifier,
+) {
+  // ۷. منطق فعال/غیرفعال بودن دکمه
+  final bool isValid =
+      AppValidators.validatePhoneNumber(state.phoneNumber) == null;
+
+  return ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+    ),
+    // ۸. ساده‌سازی onPressed
+    onPressed: (isValid && !state.isLoading) ? notifier.sendOtp : null,
+    child: state.isLoading
+        ? const CircularProgressIndicator(color: Colors.white)
+        : const Text("ارسال کد تایید"),
+  );
 }

@@ -3,7 +3,7 @@ import 'package:daneshyar/features/onboarding/view/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../features/authentication/auth/complete_profile/view/complete_profile_screen.dart';
-import '../../features/authentication/auth/login/view/login_screen.dart';
+import '../../features/authentication/auth/login/view/send_code_screen.dart';
 import '../../features/authentication/auth/otp/view/otp_screen.dart';
 import '../../initial_decider_screen.dart';
 import 'main_bottom_nav.dart';
@@ -51,27 +51,42 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => const OnboardingScreen());
 
       case '/completeProfile':
-        final args = settings.arguments as Map<String, dynamic>? ?? {};
-        final phoneNumber = args['phoneNumber'] ?? '';
-        // final phoneNumber = settings.arguments as String?;
-        if (phoneNumber == null) {
-          return _errorRoute("Phone number not provided.");
+        final args = settings.arguments as Map<String, dynamic>?;
+        if (args == null) {
+          return _errorRoute(
+            "Argument is required for complete profile screen.",
+          );
         }
+        final phoneNumber = args['phoneNumber'] as String?;
+
+        if (phoneNumber == null) {
+          return _errorRoute("Phone number is missing.");
+        }
+
         return MaterialPageRoute(
           builder: (_) => CompleteProfileScreen(phoneNumber: phoneNumber),
         );
 
       case '/otp':
-        final phoneNumber = settings.arguments as String;
+        final args = settings.arguments as Map<String, dynamic>?;
+        if (args == null) {
+          return _errorRoute("Argument is required for OTP screen.");
+        }
+        final phoneNumber = args['phoneNumber'] as String?;
+        final loginCode = args['loginCode'] as String?;
+        if (phoneNumber == null || loginCode == null) {
+          return _errorRoute("Phone number or login code is missing.");
+        }
         return MaterialPageRoute(
-          builder: (_) => OtpScreen(phoneNumber: phoneNumber),
+          builder: (_) =>
+              OtpScreen(phoneNumber: phoneNumber, loginCode: loginCode),
         );
       case '/mainScreen':
         return MaterialPageRoute(builder: (_) => const MainBottomNav());
       // case '/login':
       //   return MaterialPageRoute(builder: (_) => const LoginScreen());
       case '/login':
-        return MaterialPageRoute(builder: (_) => const LoginScreen());
+        return MaterialPageRoute(builder: (_) => const SendCodeScreen());
       case '/allCategories':
         return MaterialPageRoute(builder: (_) => const AllCategoriesScreen());
       default:

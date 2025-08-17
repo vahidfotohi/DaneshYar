@@ -1,17 +1,36 @@
-import 'package:daneshyar/features/authentication/auth/otp/model/otp_request.dart';
+import 'package:daneshyar/features/authentication/auth/login/model/send_code_request.dart';
+import 'package:daneshyar/features/authentication/auth/otp/model/otp_verify_response.dart';
 import 'package:dio/dio.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/error_mapper.dart';
-
+import '../otp/model/otp_verify_request.dart';
+import 'dart:developer' as developer;
 class AuthRepository {
   final ApiClient _api = ApiClient();
 
-  Future<SendCodeResponse> sendCode({
+  Future<String> sendCode({
     required String phoneNumber,
   }) async {
     try {
-     final loginCode =  await _api.authService.sendCode(phoneNumber: phoneNumber);
-     return SendCodeResponse(loginCode: loginCode, status: false); // change status later
+      final request = SendCodeRequest(phoneNumber: phoneNumber);
+      final loginCode = await _api.authService.sendCode(request: request);
+      developer.log(loginCode);
+      return loginCode;
+    } on DioException catch (e) {
+      throw mapDioError(e);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> verifyOtpAndLogin({
+    required String code,
+    required String loginCode,
+
+}) async {
+    try {
+      final request = OtpVerifyRequest(code: code, loginCode: loginCode);
+      await _api.authService.verifyOtpLogin(request: request);
     } on DioException catch (e) {
       throw mapDioError(e);
     } catch (e) {

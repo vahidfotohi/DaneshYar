@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:daneshyar/core/network/token_storage.dart';
+import 'package:daneshyar/features/authentication/auth/otp/model/otp_verify_request.dart';
 import 'package:dio/dio.dart';
+
+import '../login/model/send_code_request.dart';
 
 class AuthService {
   final Dio _authLessDio;
@@ -14,9 +17,9 @@ class AuthService {
         _storage = storage;
 
   Future<String> sendCode({
-    required String phoneNumber,
+    required SendCodeRequest request,
   }) async {
-    final response = await _authLessDio.post('/client/sendCode',data: {'phone_number' : phoneNumber},
+    final response = await _authLessDio.post('/client/sendCode',data: request.toJson(),
         options: Options(contentType: Headers.jsonContentType,headers: {'Accept' : 'application/json'}));
     if (response.statusCode == 200 && response.data['status'] == true) {
       // گرفتن login_code
@@ -28,12 +31,11 @@ class AuthService {
 
   }
 
-  Future<void> login({
-    required String code,
-    required String loginCode,
+  Future<void> verifyOtpLogin({
+    required OtpVerifyRequest request,
   }) async {
     final response = await _authLessDio.post('/client/login',
-      data: {'code': code, 'login_code': loginCode},
+      data: request.toJson(),
       options: Options(contentType: Headers.jsonContentType, headers: {'Accept': 'application/json'}),
     );
     final data = response.data as Map<String, dynamic>;

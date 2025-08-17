@@ -1,5 +1,10 @@
 class ApiEndpoints {
-  static const String baseUrl = 'https://your.api.base.url';
-  static const String sendOtp = '/auth/login';
-  static const String verifyOtp = '/auth/verify';
+
+  static const String baseUrl = 'https://cypher.shirzadpic.com/api';
+  static const String sendOtp = '/client/sendCode';
+  static const String verifyOtp = '/client/login';
+
+  static String full(String endpoint) {
+    return '$baseUrl$endpoint';
+  }
 }

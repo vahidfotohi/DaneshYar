@@ -1,3 +1,4 @@
+import 'package:daneshyar/core/constants/api_endpoints.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../../features/authentication/auth/service/auth_service.dart';
@@ -18,7 +19,7 @@ class ApiClient {
 
     _authlessDio = Dio(
       BaseOptions(
-        baseUrl: 'https://cypher.shirzadpic.com/api/',
+        baseUrl: ApiEndpoints.baseUrl,
         headers: {'Accept': 'application/json'},
         connectTimeout: const Duration(seconds: 25),
         receiveTimeout: const Duration(seconds: 25),
@@ -78,4 +79,11 @@ class ApiClient {
       {dynamic data, Map<String, dynamic>? query, Options? options}) {
     return dio.post<T>(path, data: data, queryParameters: query, options: options);
   }
+
+  Future<Response<T>> put<T>(String path, {dynamic data, Options? options}) =>
+      dio.put<T>(path, data: data, options: options);
+
+  Future<Response<T>> delete<T>(String path, {Map<String, dynamic>? query, Options? options}) =>
+      dio.delete<T>(path, queryParameters: query, options: options);
+
 }

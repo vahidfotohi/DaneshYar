@@ -20,12 +20,12 @@ class OtpState {
   factory OtpState.initial() {
     return const OtpState(
       otpCode: "",
-      counter: 120,
+      counter: 60,
       isLoading: false,
       isVerified: false,
       hasError: false,
       isResendAvailable: false,
-      errorMessage: null
+      errorMessage: null,
     );
   }
 
@@ -36,7 +36,8 @@ class OtpState {
     bool? isVerified,
     bool? hasError,
     bool? isResendAvailable,
-    String? errorMessage
+    String? errorMessage,
+    bool clearErrorMessage = false,
   }) {
     return OtpState(
       otpCode: otpCode ?? this.otpCode,
@@ -45,7 +46,9 @@ class OtpState {
       isVerified: isVerified ?? this.isVerified,
       hasError: hasError ?? this.hasError,
       isResendAvailable: isResendAvailable ?? this.isResendAvailable,
-      errorMessage: errorMessage ?? this.errorMessage
+      errorMessage: clearErrorMessage
+          ? null
+          : errorMessage ?? this.errorMessage,
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:daneshyar/core/constants/constants.dart';
+import 'package:daneshyar/core/routes/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -8,9 +9,14 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import '../provider/otp_provider.dart';
 
 class OtpScreen extends ConsumerStatefulWidget {
+  final String loginCode;
   final String phoneNumber;
 
-  const OtpScreen({super.key, required this.phoneNumber});
+  const OtpScreen({
+    super.key,
+    required this.phoneNumber,
+    required this.loginCode,
+  });
 
   @override
   ConsumerState<OtpScreen> createState() => _OtpScreenState();
@@ -18,21 +24,24 @@ class OtpScreen extends ConsumerStatefulWidget {
 
 class _OtpScreenState extends ConsumerState<OtpScreen> {
   late StreamController<ErrorAnimationType> errorController;
-  late final otpViewModel = ref.read(otpViewModelProvider.notifier);
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // ارسال کد تایید در هنگام ورود به صفحه
-      otpViewModel.resendCode(widget.phoneNumber);
-    });
+    final providerArguments = {
+      'phoneNumber': widget.phoneNumber,
+      'loginCode': widget.loginCode,
+    };
+    Future.microtask(
+      () => ref
+          .read(otpViewModelProvider(providerArguments).notifier)
+          .initialize(),
+    );
     errorController = StreamController<ErrorAnimationType>();
   }
 
   @override
   void dispose() {
-    otpViewModel.stopTimer();
     errorController.close();
     super.dispose();
   }
@@ -41,7 +50,32 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final otpState = ref.watch(otpViewModelProvider);
+    final providerArguments = {
+      'phoneNumber': widget.phoneNumber,
+      'loginCode': widget.loginCode,
+    };
+    final otpProvider = otpViewModelProvider(providerArguments);
+    final otpState = ref.watch(otpProvider);
+    final otpNotifier = ref.read(otpProvider.notifier);
+
+    ref.listen(otpProvider, (previous, next) {
+      if (next.hasError && !(previous?.hasError ?? false)) {
+        errorController.add(ErrorAnimationType.shake);
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: Text(next.errorMessage ?? " خطای نامشخص ")),
+          );
+      }
+      if (next.isVerified) {
+        otpNotifier.stopTimer();
+        Navigator.pushReplacementNamed(
+          context,
+         AppRoute.completeProfile,
+          arguments: {'phoneNumber': widget.phoneNumber},
+        );
+      }
+    });
 
     final themeData = Theme.of(context).textTheme;
     final themeColor = Theme.of(context).colorScheme;
@@ -129,7 +163,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                     selectedFillColor: Colors.white,
                   ),
                   onChanged: (value) => setState(() {
-                    otpViewModel.updateOtp(value);
+                    otpNotifier.onOtpChanged(value);
                   }),
                   onCompleted: (value) {},
                 ),
@@ -198,60 +232,29 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                         )
                       : Row(
                           children: [
-                            TextButton.icon(
-                              onPressed: () async {
-                                await otpViewModel.resendCode(widget.phoneNumber);
-                              },
-                              icon: const Icon(Icons.refresh),
-                              label: Text(
-                                "ارسال مجدد کد",
-                                style: TextStyle(color: themeColor.primary),
+                            if (otpState.isResendAvailable)
+                              TextButton.icon(
+                                onPressed: () async {
+                                  await otpNotifier.resendCode(
+                                    widget.phoneNumber,
+                                  );
+                                },
+                                icon: const Icon(Icons.refresh),
+                                label: Text(
+                                  "ارسال مجدد کد",
+                                  style: TextStyle(color: themeColor.primary),
+                                ),
                               ),
-                            ),
                           ],
                         ),
                 ],
               ),
               const Spacer(),
-              // lightBorderconst SizedBox(height: 24),
+              // lightBorder const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: otpState.isLoading
-                      ? null
-                      : () async {
-                          await otpViewModel.verifyOtp();
-                          if (!context.mounted) return;
-                          
-                          if (otpState.isVerified) {
-                            otpViewModel.stopTimer();
-                            Navigator.pushReplacementNamed(
-                              context,
-                              "/completeProfile",
-                              arguments: {'phoneNumber': widget.phoneNumber},
-                            );
-                          } else if (otpState.hasError) {
-                            errorController.add(ErrorAnimationType.shake);
-                          }
-                          // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                          //   if (!context.mounted) return;
-                          //   final isCompleted = ref.read(otpViewModelProvider).isVerified;
-                          //   if (isCompleted) {
-                          //     Navigator.pushReplacementNamed(context, "/completeProfile");
-                          //   }
-                          // },);
-                          // Future.microtask(() {
-                          //   if (ref.read(otpViewModelProvider).isVerified && context.mounted) {
-                          //     Navigator.pushReplacementNamed(
-                          //       context,
-                          //       "/completeProfile",
-                          //     );
-                          //     otpViewModel.stopTimer();
-                          //   } else if (ref.read(otpViewModelProvider).hasError) {
-                          //     errorController.add(ErrorAnimationType.shake);
-                          //   }
-                          // });
-                        },
+                  onPressed: otpState.isLoading ? null : otpNotifier.verifyOtp,
 
                   child: otpState.isLoading
                       ? CircularProgressIndicator(color: themeColor.primary)
