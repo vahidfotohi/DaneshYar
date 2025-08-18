@@ -1,12 +1,13 @@
 import 'dart:async';
-
 import 'package:daneshyar/core/constants/constants.dart';
 import 'package:daneshyar/core/routes/app_route.dart';
+import 'package:daneshyar/features/authentication/auth/otp/view/otp_screen_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../provider/otp_provider.dart';
+import '../state/otp_state.dart';
 
 class OtpScreen extends ConsumerStatefulWidget {
   final String loginCode;
@@ -23,21 +24,24 @@ class OtpScreen extends ConsumerStatefulWidget {
 }
 
 class _OtpScreenState extends ConsumerState<OtpScreen> {
-  late StreamController<ErrorAnimationType> errorController;
+  final errorController = StreamController<ErrorAnimationType>();
+  late final OtpScreenArguments providerArguments;
 
   @override
   void initState() {
     super.initState();
-    final providerArguments = {
-      'phoneNumber': widget.phoneNumber,
-      'loginCode': widget.loginCode,
-    };
+
+    providerArguments = OtpScreenArguments(
+      phoneNumber: widget.phoneNumber,
+      loginCode: widget.loginCode,
+    );
     Future.microtask(
       () => ref
           .read(otpViewModelProvider(providerArguments).notifier)
           .initialize(),
     );
-    errorController = StreamController<ErrorAnimationType>();
+
+    // errorController = StreamController<ErrorAnimationType>();
   }
 
   @override
@@ -50,28 +54,33 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final providerArguments = {
-      'phoneNumber': widget.phoneNumber,
-      'loginCode': widget.loginCode,
-    };
+
     final otpProvider = otpViewModelProvider(providerArguments);
     final otpState = ref.watch(otpProvider);
-    final otpNotifier = ref.read(otpProvider.notifier);
+    final otpNotifier = ref.read(
+      otpProvider.notifier,
+    );
 
-    ref.listen(otpProvider, (previous, next) {
+    ref.listen<OtpState>(otpProvider, (previous, next) {
       if (next.hasError && !(previous?.hasError ?? false)) {
         errorController.add(ErrorAnimationType.shake);
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(
-            SnackBar(content: Text(next.errorMessage ?? " خطای نامشخص ")),
+            SnackBar(
+              content: Text(
+                next.errorMessage ?? " خطای نامشخص ",
+                textDirection: TextDirection.rtl,
+                textAlign: TextAlign.right,
+              ),
+            ),
           );
       }
       if (next.isVerified) {
-        otpNotifier.stopTimer();
+        // otpNotifier.stopTimer();
         Navigator.pushReplacementNamed(
           context,
-         AppRoute.completeProfile,
+          AppRoute.completeProfile,
           arguments: {'phoneNumber': widget.phoneNumber},
         );
       }
@@ -135,6 +144,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                     if (otpState.hasError) return "";
                     return null;
                   },
+
                   appContext: context,
                   useHapticFeedback: true,
                   length: 6,
@@ -147,7 +157,6 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                   errorAnimationController: errorController,
                   animationDuration: const Duration(milliseconds: 300),
                   hapticFeedbackTypes: HapticFeedbackTypes.heavy,
-
                   pinTheme: PinTheme(
                     shape: PinCodeFieldShape.box,
                     borderRadius: BorderRadius.circular(8),
@@ -162,13 +171,11 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                     activeFillColor: Colors.white,
                     selectedFillColor: Colors.white,
                   ),
-                  onChanged: (value) => setState(() {
-                    otpNotifier.onOtpChanged(value);
-                  }),
-                  onCompleted: (value) {},
+                  onChanged: otpNotifier.onOtpChanged,
+                  onCompleted: (value) => otpNotifier.verifyOtp(),
                 ),
               ),
-              if (otpState.hasError)
+              if (otpState.hasError && otpState.errorMessage != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(
@@ -205,48 +212,47 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                       ],
                     ),
                   ),
-                  !otpState.isResendAvailable
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          textDirection: TextDirection.rtl,
-                          children: [
-                            const Icon(
-                              Icons.timelapse_outlined,
-                              color: AppColors.lightBorder,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              formatTime(otpState.counter),
-                              style: TextStyle(color: themeColor.primaryFixed),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              " تا دریافت مجدد کد",
-                              style: themeData.bodySmall!.copyWith(
-                                fontSize: 10,
-                                color: AppColors.lightBorder,
-                              ),
-                            ),
-                          ],
-                        )
-                      : Row(
-                          children: [
-                            if (otpState.isResendAvailable)
-                              TextButton.icon(
-                                onPressed: () async {
-                                  await otpNotifier.resendCode(
-                                    widget.phoneNumber,
-                                  );
-                                },
-                                icon: const Icon(Icons.refresh),
-                                label: Text(
-                                  "ارسال مجدد کد",
-                                  style: TextStyle(color: themeColor.primary),
-                                ),
-                              ),
-                          ],
+                  if (!otpState.isResendAvailable)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      textDirection: TextDirection.rtl,
+                      children: [
+                        const Icon(
+                          Icons.timelapse_outlined,
+                          color: AppColors.lightBorder,
+                          size: 16,
                         ),
+                        const SizedBox(width: 6),
+                        Text(
+                          formatTime(otpState.counter),
+                          style: TextStyle(color: themeColor.primaryFixed),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          " تا دریافت مجدد کد",
+                          style: themeData.bodySmall!.copyWith(
+                            fontSize: 10,
+                            color: AppColors.lightBorder,
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Row(
+                      children: [
+                        if (otpState.isResendAvailable)
+                          TextButton.icon(
+                            onPressed: () {
+                              otpNotifier.resendCode();
+                            },
+                            icon: const Icon(Icons.refresh),
+                            label: Text(
+                              "ارسال مجدد کد",
+                              style: TextStyle(color: themeColor.primary),
+                            ),
+                          ),
+                      ],
+                    ),
                 ],
               ),
               const Spacer(),

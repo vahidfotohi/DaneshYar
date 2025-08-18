@@ -20,7 +20,7 @@ class OtpState {
   factory OtpState.initial() {
     return const OtpState(
       otpCode: "",
-      counter: 60,
+      counter: 120,
       isLoading: false,
       isVerified: false,
       hasError: false,

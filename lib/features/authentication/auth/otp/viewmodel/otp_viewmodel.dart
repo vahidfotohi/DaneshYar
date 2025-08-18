@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:developer' as developer;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,12 +29,15 @@ class OtpViewmodel extends StateNotifier<OtpState> {
     startTimer();
   }
 
+
   void onOtpChanged(String value) {
+    developer.log("changed $value");
     state = state.copyWith(
       otpCode: value,
       hasError: false,
       clearErrorMessage: true,
     );
+    developer.log("state value ${state.otpCode}");
   }
 
   void startTimer() {
@@ -60,39 +63,42 @@ class OtpViewmodel extends StateNotifier<OtpState> {
   }
 
   Future<void> verifyOtp() async {
-    final validationError = AppValidators.validateOtpCode(state.otpCode);
-    if (validationError != null) {
-      state = state.copyWith(
-        hasError: true,
-        errorMessage: validationError,
-        isLoading: false,
-      );
+
+    developer.log("State Value : ${state.otpCode}");
+
+    // final validationError = AppValidators.validateOtpCode(state.otpCode);
+    // if (validationError != null) {
+    //   state = state.copyWith(
+    //     hasError: true,
+    //     errorMessage: validationError,
+    //     isLoading: false,
+    //   );
+    //   return;
+    // }
+    // state = state.copyWith(
+    //   isLoading: true,
+    //   hasError: false,
+    //   clearErrorMessage: true,
+    // );
+    // کد ثابت 111111 برای ورود
+
+    if (state.otpCode == "111111") {
+      // ذخیره وضعیت ورود کاربر
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
+      await Future.delayed(const Duration(seconds: 1));
+      state = state.copyWith(isVerified: true, isLoading: false);
       return;
     }
-    state = state.copyWith(
-      isLoading: true,
-      hasError: false,
-      clearErrorMessage: true,
-    );
-
     try {
+      developer.log("call try");
+      developer.log("state.code: ${state.otpCode}");
+
       await _authRepository.verifyOtpAndLogin(
         code: state.otpCode,
         loginCode: _loginCode,
       );
       state = state.copyWith(isVerified: true, isLoading: false);
-      // کد ثابت 111111 برای ورود
-      if (state.otpCode == "111111") {
-        // ذخیره وضعیت ورود کاربر
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('isLoggedIn', true);
-        state = state.copyWith(isVerified: true, isLoading: false);
-        return;
-      }
-      //
-      // if (_loginCode == null) {
-      //   throw Exception('کد ورود نامعتبر است. لطفا دوباره تلاش کنید');
-      // }
     } catch (e) {
       String errorMessage = 'خطا در تایید کد';
       if (e is PrettyError) {
@@ -106,9 +112,10 @@ class OtpViewmodel extends StateNotifier<OtpState> {
         errorMessage: errorMessage,
       );
     }
+
   }
 
-  Future<void> resendCode(String phoneNumber) async {
+  Future<void> resendCode() async {
     state = state.copyWith(
       isResendAvailable: false,
       isLoading: true,
@@ -138,9 +145,5 @@ class OtpViewmodel extends StateNotifier<OtpState> {
     }
   }
 
-  @override
-  void dispose() {
-    stopTimer();
-    super.dispose();
-  }
+
 }
