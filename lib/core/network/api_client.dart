@@ -20,7 +20,7 @@ class ApiClient {
     _authlessDio = Dio(
       BaseOptions(
         baseUrl: ApiEndpoints.baseUrl,
-        headers: {'Accept': 'application/json'},
+        headers: {'content-type': 'application/json'},
         connectTimeout: const Duration(seconds: 25),
         receiveTimeout: const Duration(seconds: 25),
         sendTimeout: const Duration(seconds: 25),
@@ -28,14 +28,15 @@ class ApiClient {
     );
 
     _authService = AuthService(
+
       authLessDio: _authlessDio,
       storage: _storage,
     );
 
     dio = Dio(
       BaseOptions(
-        baseUrl: 'https://cypher.shirzadpic.com/api/',
-        headers: {'Accept': 'application/json'},
+        baseUrl: ApiEndpoints.baseUrl,
+        headers: {'content-type': 'application/json'},
         connectTimeout: const Duration(seconds: 25),
         receiveTimeout: const Duration(seconds: 25),
         sendTimeout: const Duration(seconds: 25),

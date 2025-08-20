@@ -10,6 +10,14 @@ class OtpVerifyResponse {
     required this.errorCode,
     required this.errorMessage,
   });
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status,
+      'data': data.toJson(),
+      'error_code': errorCode,
+      'error_message': errorMessage,
+    };
+  }
 
   factory OtpVerifyResponse.fromJson(Map<String, dynamic> json) {
     return OtpVerifyResponse(
@@ -42,6 +50,15 @@ class Data {
       tokenType: json['token_type'] ?? '',
       expiresIn: json['expires_in'] ?? 0,
     );
+  }
+
+  toJson() {
+    return {
+      'type': type,
+      'access_token': accessToken,
+      'token_type': tokenType,
+      'expires_in': expiresIn,
+    };
   }
 
 }

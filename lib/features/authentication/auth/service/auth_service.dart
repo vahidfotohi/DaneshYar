@@ -1,7 +1,12 @@
 import 'dart:async';
 
+import 'package:daneshyar/core/constants/api_endpoints.dart';
+import 'package:daneshyar/core/constants/strings.dart';
 import 'package:daneshyar/core/network/token_storage.dart';
+import 'package:daneshyar/features/authentication/auth/login/model/send_code_response.dart';
 import 'package:daneshyar/features/authentication/auth/otp/model/otp_verify_request.dart';
+import 'package:daneshyar/features/authentication/auth/otp/model/otp_verify_response.dart';
+import 'package:daneshyar/features/authentication/auth/refresh_token/model/refresh_token_response.dart';
 import 'package:dio/dio.dart';
 
 import '../login/model/send_code_request.dart';
@@ -19,14 +24,14 @@ class AuthService {
   Future<String> sendCode({
     required SendCodeRequest request,
   }) async {
-    final response = await _authLessDio.post('/client/sendCode',data: request.toJson(),
+    final response = await _authLessDio.post(ApiEndpoints.sendOtp,data: request.toJson(),
         options: Options(contentType: Headers.jsonContentType,headers: {'Accept' : 'application/json'}));
-    if (response.statusCode == 200 && response.data['status'] == true) {
-      // گرفتن login_code
-      final loginCode = response.data['data']['login_code'];
-      return loginCode;
+
+    final loginCodeResponse = SendCodeResponse.fromJson(response.data);
+    if (loginCodeResponse.status != true ) {
+      throw Exception(AppStrings.sendInvalidPhoneNumber);
     } else {
-      throw Exception(response.data['error'] ?? 'خطای ناشناخته');
+      return loginCodeResponse.data.loginCode;
     }
 
   }
@@ -34,18 +39,16 @@ class AuthService {
   Future<void> verifyOtpLogin({
     required OtpVerifyRequest request,
   }) async {
-    final response = await _authLessDio.post('/client/login',
+    final response = await _authLessDio.post(ApiEndpoints.verifyOtp,
       data: request.toJson(),
-      options: Options(contentType: Headers.jsonContentType, headers: {'Accept': 'application/json'}),
+      options: Options(contentType: Headers.jsonContentType, headers: {'content-type': 'application/json'}),
     );
-    final data = response.data as Map<String, dynamic>;
-    final access = data['access_token'] as String?;
-    final refresh = data['refresh_token'] as String?;
-    if (access == null || refresh == null) {
-      throw Exception('Login failed: Access or refresh token is null');
+    final verifyResponse = OtpVerifyResponse.fromJson(response.data);
+    if(verifyResponse.status != true || verifyResponse.data.accessToken.isEmpty) {
+      throw Exception(verifyResponse.errorMessage ?? 'خطا در ورود');
     }
-    await _storage.writeAccessToken(access);
-    await _storage.writeRefreshToken(refresh);
+    await _storage.writeAccessToken(verifyResponse.data.accessToken);
+    // await _storage.writeRefreshToken(refresh);
   }
 
   Future<void> refreshTokenIfNeeded() async {
@@ -54,31 +57,25 @@ class AuthService {
     }
     _refreshCompleter = Completer<void>();
     try {
-      final refreshToken = await _storage.readRefreshToken();
-      if (refreshToken == null) {
-        throw Exception('No refresh token available');
+      final currentAccessToken = await _storage.readAccessToken();
+      if (currentAccessToken == null) {
+        throw Exception('No access token available for refresh.');
       }
 
       final response = await _authLessDio.post(
-        '/client/refresh',
-        data: {'refresh_token': refreshToken},
-        options: Options(contentType: Headers.jsonContentType, headers: {'Accept': 'application/json'}),
+        ApiEndpoints.refreshToken,
+        options: Options(headers: {'Authorization': 'Bearer $currentAccessToken'}),
       );
-
-      final data = response.data as Map<String, dynamic>;
-      final newAccess = data['access_token'] as String?;
-      final newRefresh = data['refresh_token'] as String?;
-
-      if (newAccess == null || newRefresh == null) {
-        throw Exception('Refresh failed: Access or refresh token is null');
+      final refreshToken = RefreshTokenResponse.fromJson(response.data);
+      final newAccessToken = refreshToken.accessToken;
+      if(newAccessToken.isEmpty){
+        throw Exception('Refresh failed: New access token is empty');
       }
 
-      await _storage.writeAccessToken(newAccess);
-      if (newRefresh.isNotEmpty) {
-        await _storage.writeRefreshToken(newRefresh);
-      }
+      await _storage.writeAccessToken(newAccessToken);
       _refreshCompleter!.complete();
     } catch (e, st) {
+      await logout();
       _refreshCompleter!.completeError(e, st);
       rethrow;
     } finally {
