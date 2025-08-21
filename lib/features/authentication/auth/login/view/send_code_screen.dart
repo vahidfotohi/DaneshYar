@@ -1,12 +1,10 @@
 import 'package:daneshyar/core/constants/constants.dart';
+import 'package:daneshyar/core/constants/strings.dart';
 import 'package:daneshyar/core/routes/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../core/utils/validators.dart';
 import '../provider/send_code_provider.dart';
-import '../state/send_code_state.dart';
-import '../viewmodel/send_code_viewmodel.dart';
 
 class SendCodeScreen extends ConsumerStatefulWidget {
   const SendCodeScreen({super.key});
@@ -59,14 +57,14 @@ class _LoginScreenState extends ConsumerState<SendCodeScreen> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              "لطفا شماره موبایل خود را وارد کنید.",
+              AppStrings.sendCodeTopTerm,
               style: Theme.of(context).textTheme.headlineMedium,
               textAlign: TextAlign.center,
               textDirection: TextDirection.rtl,
             ),
             const SizedBox(height: 24),
             Text(
-              "شماره موبایل",
+              AppStrings.sendCodePhoneNumber,
               textDirection: TextDirection.rtl,
               style: Theme.of(
                 context,
@@ -81,7 +79,7 @@ class _LoginScreenState extends ConsumerState<SendCodeScreen> {
               controller: _phoneController,
               onChanged: (value) => notifier.onPhoneChanged(value),
               decoration: InputDecoration(
-                hintText: "09********",
+                hintText: AppStrings.sendCodeHintText,
                 hintStyle: const TextStyle(color: AppColors.hintText),
                 suffixIcon: const Icon(
                   Icons.phone_iphone_outlined,
@@ -90,16 +88,19 @@ class _LoginScreenState extends ConsumerState<SendCodeScreen> {
                 ),
                 error: state.hasError && state.errorMessage != null
                     ? Padding(
-                      padding: const EdgeInsets.only(right: 10.0),
-                      child: Align(
+                        padding: const EdgeInsets.only(right: 10.0),
+                        child: Align(
                           alignment: Alignment.centerRight,
                           child: Text(
                             state.errorMessage!,
                             textDirection: TextDirection.rtl,
-                            style: const TextStyle(color: Colors.red , fontSize: 12),
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
-                    )
+                      )
                     : null,
 
                 prefixIcon: state.phoneNumber.length >= 11
@@ -138,14 +139,14 @@ class _LoginScreenState extends ConsumerState<SendCodeScreen> {
                     context,
                   ).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
                   children: [
-                    const TextSpan(text: "با ثبت نام در دانشیار "),
+                    const TextSpan(text: AppStrings.sendCodeTerm),
                     TextSpan(
-                      text: "شرایط و قوانین عضویت ",
+                      text: AppStrings.sendCodeTermMiddle,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primaryFixed,
                       ),
                     ),
-                    const TextSpan(text: "را می پذیرم."),
+                    const TextSpan(text: AppStrings.sendCodeTermLast),
                   ],
                 ),
               ),
@@ -164,7 +165,7 @@ class _LoginScreenState extends ConsumerState<SendCodeScreen> {
                 onPressed: state.isLoading ? null : notifier.sendOtp,
                 child: state.isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("ثبت شماره موبایل"),
+                    : const Text(AppStrings.sendCodeSubmitPhoneNumber),
               ),
             ),
           ],
@@ -172,71 +173,4 @@ class _LoginScreenState extends ConsumerState<SendCodeScreen> {
       ),
     );
   }
-}
-
-Widget _buildHeader(BuildContext context) {
-  return Text(
-    "برای ورود یا ثبت‌نام، شماره موبایل خود را وارد کنید.",
-    style: Theme.of(context).textTheme.headlineMedium,
-    textAlign: TextAlign.center,
-    textDirection: TextDirection.rtl,
-  );
-}
-
-Widget _buildPhoneNumberField(
-  BuildContext context,
-  SendCodeState state,
-  SendCodeViewmodel notifier,
-) {
-  return TextField(
-    maxLength: 11,
-    textAlign: TextAlign.center,
-    keyboardType: TextInputType.phone,
-    onChanged: notifier.onPhoneChanged,
-    decoration: InputDecoration(
-      labelText: "شماره موبایل",
-      hintText: "09123456789",
-      // ۶. استفاده از errorText برای نمایش خطا
-      errorText: state.hasError ? state.errorMessage : null,
-    ),
-  );
-}
-
-Widget _buildTermsAndConditions(BuildContext context) {
-  return RichText(
-    textAlign: TextAlign.center,
-    textDirection: TextDirection.rtl,
-    text: TextSpan(
-      style: Theme.of(context).textTheme.bodyMedium,
-      children: [
-        const TextSpan(text: "با ورود و یا ثبت نام در دانشیار، شما "),
-        TextSpan(
-          text: "شرایط و قوانین ",
-          style: TextStyle(color: Theme.of(context).colorScheme.primary),
-        ),
-        const TextSpan(text: "ما را می‌پذیرید."),
-      ],
-    ),
-  );
-}
-
-Widget _buildSubmitButton(
-  BuildContext context,
-  SendCodeState state,
-  SendCodeViewmodel notifier,
-) {
-  // ۷. منطق فعال/غیرفعال بودن دکمه
-  final bool isValid =
-      AppValidators.validatePhoneNumber(state.phoneNumber) == null;
-
-  return ElevatedButton(
-    style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-    ),
-    // ۸. ساده‌سازی onPressed
-    onPressed: (isValid && !state.isLoading) ? notifier.sendOtp : null,
-    child: state.isLoading
-        ? const CircularProgressIndicator(color: Colors.white)
-        : const Text("ارسال کد تایید"),
-  );
 }

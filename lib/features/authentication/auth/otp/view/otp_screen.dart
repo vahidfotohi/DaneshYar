@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:daneshyar/core/constants/constants.dart';
+import 'package:daneshyar/core/constants/strings.dart';
 import 'package:daneshyar/core/routes/app_route.dart';
 import 'package:daneshyar/features/authentication/auth/otp/view/otp_screen_arguments.dart';
 import 'package:flutter/material.dart';
@@ -54,12 +55,9 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final otpProvider = otpViewModelProvider(providerArguments);
     final otpState = ref.watch(otpProvider);
-    final otpNotifier = ref.read(
-      otpProvider.notifier,
-    );
+    final otpNotifier = ref.read(otpProvider.notifier);
 
     ref.listen<OtpState>(otpProvider, (previous, next) {
       if (next.hasError && !(previous?.hasError ?? false)) {
@@ -69,7 +67,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
           ..showSnackBar(
             SnackBar(
               content: Text(
-                next.errorMessage ?? " خطای نامشخص ",
+                next.errorMessage ?? AppStrings.otpSnackBarError,
                 textDirection: TextDirection.rtl,
                 textAlign: TextAlign.right,
               ),
@@ -115,12 +113,12 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                   style: themeData.displayMedium,
 
                   children: [
-                    const TextSpan(text: "کد ارسال شده به شماره "),
+                    const TextSpan(text: AppStrings.otpTitlePrefix),
                     TextSpan(
                       text: widget.phoneNumber,
                       style: TextStyle(color: themeColor.primaryFixed),
                     ),
-                    const TextSpan(text: " را وارد کنید"),
+                    const TextSpan(text: AppStrings.otpTitleSuffix),
                   ],
                 ),
               ),
@@ -128,7 +126,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  "کد تایید",
+                  AppStrings.otpLabel,
                   style: themeData.bodyLarge,
                   textAlign: TextAlign.right,
                   textDirection: TextDirection.rtl,
@@ -179,7 +177,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(
-                    otpState.errorMessage ?? "کد وارد شده صحیح نیست.",
+                    otpState.errorMessage ?? AppStrings.otpInvalidCode,
                     style: TextStyle(color: themeColor.error),
                     textDirection: TextDirection.rtl,
                   ),
@@ -198,7 +196,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "ویرایش شماره موبایل",
+                          AppStrings.otpEditPhone,
                           style: themeData.bodySmall!.copyWith(
                             color: themeColor.primaryFixed,
                           ),
@@ -229,7 +227,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          " تا دریافت مجدد کد",
+                          AppStrings.otpResendWait,
                           style: themeData.bodySmall!.copyWith(
                             fontSize: 10,
                             color: AppColors.lightBorder,
@@ -247,7 +245,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                             },
                             icon: const Icon(Icons.refresh),
                             label: Text(
-                              "ارسال مجدد کد",
+                              AppStrings.otpResend,
                               style: TextStyle(color: themeColor.primary),
                             ),
                           ),
@@ -265,7 +263,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                   child: otpState.isLoading
                       ? CircularProgressIndicator(color: themeColor.primary)
                       : Text(
-                          "تایید",
+                          AppStrings.otpConfirm,
                           style: themeData.bodyLarge!.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
