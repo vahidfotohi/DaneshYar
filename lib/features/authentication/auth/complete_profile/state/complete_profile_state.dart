@@ -5,8 +5,10 @@ class CompleteProfileState {
   final bool isCompleted;
   final bool hasError;
   final String phoneNumber;
+  final String? errorMessage;
 
   const CompleteProfileState({
+    this.errorMessage,
     required this.fullName,
     required this.phoneNumber,
     required this.imagePath,
@@ -17,12 +19,14 @@ class CompleteProfileState {
 
   factory CompleteProfileState.initial() {
     return const CompleteProfileState(
+
       fullName: '',
       imagePath: null,
       isLoading: false,
       isCompleted: false,
-      hasError: true,
+      hasError: false,
       phoneNumber: '',
+      errorMessage: null,
     );
   }
 
@@ -33,6 +37,7 @@ class CompleteProfileState {
     bool? isCompleted,
     bool? hasError,
     String? phoneNumber,
+    String? errorMessage,
   }) {
     return CompleteProfileState(
       fullName: fullName ?? this.fullName,
@@ -41,6 +46,7 @@ class CompleteProfileState {
       isCompleted: isCompleted ?? this.isCompleted,
       hasError: hasError ?? this.hasError,
       phoneNumber: phoneNumber ?? this.phoneNumber,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 }

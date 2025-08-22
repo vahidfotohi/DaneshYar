@@ -15,7 +15,7 @@ class AuthInterceptor extends QueuedInterceptorsWrapper {
   }
 
   bool _isAuthFree(String path) {
-    return path.contains('/client/login') || path.contains('/client/register');
+    return path.contains('/client/login') || path.contains('/client/sendCode');
     // path.contains('/client/refresh');
   }
 

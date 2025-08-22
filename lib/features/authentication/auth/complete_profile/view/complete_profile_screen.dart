@@ -1,7 +1,10 @@
+import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:daneshyar/core/constants/constants.dart';
+import 'package:daneshyar/core/constants/strings.dart';
 import 'package:daneshyar/core/routes/app_route.dart';
+import 'package:daneshyar/features/authentication/auth/complete_profile/state/complete_profile_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -32,14 +35,25 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
   Widget build(BuildContext context) {
     final profileState = ref.watch(completeProfileViewmodelProvider);
     final profileNotifier = ref.read(completeProfileViewmodelProvider.notifier);
-    ref.listen(completeProfileViewmodelProvider, (previous, next) {
+    ref.listen<CompleteProfileState>(completeProfileViewmodelProvider, (
+      previous,
+      next,
+    ) {
+      developer.log(
+        "Listener detected a state change. New isCompleted flag: ${next.isCompleted}",
+      );
       if (next.isCompleted) {
+        developer.log("Navigating to main screen...");
         Navigator.pushReplacementNamed(context, AppRoute.mainScreen);
       }
       if (next.hasError) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("خطا در ثبت اطلاعات پروفایل"),
+            content: Text(
+              AppStrings.completeProfileSnackBarText,
+              textAlign: TextAlign.right,
+              textDirection: TextDirection.rtl,
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -53,84 +67,20 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
         decoration: BoxDecoration(color: themeColor.surfaceBright),
         child: Column(
           children: [
-            // Text("مشخصات خود را کامل کنید", style: themeData.headlineMedium),
-            // const SizedBox(height: 10),
-            // Text(
-            //   "این اطلاعات صرفاً جهت تکمیل ثبت نام شماست و هیچکس قادر به دیدن اطلاعات شما نخواهد بود.",
-            //   style: themeData.labelSmall!.copyWith(
-            //     color: AppColors.lightBorder,
-            //   ),
-            //   textDirection: TextDirection.rtl,
-            //   textAlign: TextAlign.center,
-            // ),
             const _HeaderSection(),
             const SizedBox(height: 54),
-            // SizedBox(
-            //   height: 120,
-            //   width: 120,
-            //   child: CircleAvatar(
-            //     backgroundImage: profileState.imagePath != null
-            //         ? FileImage(File(profileState.imagePath!))
-            //         : const AssetImage(
-            //             "assets/images/completeProfile/ChangeProfile.png",
-            //           ),
-            //     child: GestureDetector(
-            //       onTap: () => profileNotifier.pickImage(),
-            //       child: const Align(
-            //         alignment: Alignment.bottomRight,
-            //         child: CircleAvatar(
-            //           backgroundImage:
-            //               AssetImage("assets/images/completeProfile/Edit.png")
-            //                   as ImageProvider,
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+
             _ProfileAvatar(
               imagePath: profileState.imagePath,
               onTap: profileNotifier.pickImage,
             ),
             const SizedBox(height: 32),
-            // Align(
-            //   alignment: Alignment.centerRight,
-            //   child: Text(
-            //     "نام و ناخانوادگی",
-            //     style: themeData.titleSmall!.copyWith(
-            //       fontWeight: FontWeight.w600,
-            //     ),
-            //     textDirection: TextDirection.rtl,
-            //     textAlign: TextAlign.right,
-            //   ),
-            // ),
-            // const SizedBox(height: 8),
-            // TextField(
-            //   textAlign: TextAlign.right,
-            //   textDirection: TextDirection.rtl,
-            //   onChanged: profileNotifier.updateFullName,
-            //   decoration: const InputDecoration(
-            //     hintText: "اطلاعات را وارد کنید",
-            //     // errorText: profileState.fullName.trim().isEmpty?"وارد کردن نام اجباری است":null,
-            //     // errorStyle: TextStyle(),
-            //     border: OutlineInputBorder(),
-            //   ),
-            // ),
-            _FullNameTextField(onChanged: profileNotifier.updateFullName),
+
+            _FullNameTextField(
+              onChanged: (value) => profileNotifier.updateFullName(value),
+            ),
             const Spacer(),
-            // SizedBox(
-            //   width: double.infinity,
-            //   child: ElevatedButton(
-            //     onPressed:
-            //         profileState.fullName.length < 3 || profileState.isLoading
-            //         ? null
-            //         : profileNotifier.submitProfile,
-            //     child: profileState.isLoading
-            //         ? CircularProgressIndicator(
-            //             color: themeColor.primaryFixedDim,
-            //           )
-            //         : const Text("ثبت مشخصات"),
-            //   ),
-            // ),
+
             _SubmitButton(
               isLoading: profileState.isLoading,
               isEnabled: profileState.fullName.length >= 3,
@@ -153,10 +103,10 @@ class _HeaderSection extends StatelessWidget {
     final themeData = Theme.of(context).textTheme;
     return Column(
       children: [
-        Text("مشخصات خود را کامل کنید", style: themeData.headlineMedium),
+        Text(AppStrings.completeProfileHeaderText, style: themeData.headlineMedium),
         const SizedBox(height: 10),
         Text(
-          "این اطلاعات صرفاً جهت تکمیل ثبت نام شماست و هیچکس قادر به دیدن اطلاعات شما نخواهد بود.",
+          AppStrings.completeProfileHeaderText2,
           style: themeData.labelSmall!.copyWith(color: AppColors.lightBorder),
           textDirection: TextDirection.rtl,
           textAlign: TextAlign.center,
@@ -216,7 +166,7 @@ class _FullNameTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          "نام و نام خانوادگی",
+          AppStrings.completeProfileInputLabel,
           style: theme.textTheme.titleSmall!.copyWith(
             fontWeight: FontWeight.w600,
           ),
@@ -226,7 +176,9 @@ class _FullNameTextField extends StatelessWidget {
           textAlign: TextAlign.right,
           textDirection: TextDirection.rtl,
           onChanged: onChanged,
-          decoration: const InputDecoration(hintText: "اطلاعات را وارد کنید"),
+          decoration: const InputDecoration(
+            hintText: AppStrings.completeProfileInputHintText,
+          ),
         ),
       ],
     );
@@ -255,7 +207,7 @@ class _SubmitButton extends StatelessWidget {
         onPressed: isLoading || !isEnabled ? null : onPressed,
         child: isLoading
             ? const CircularProgressIndicator(color: Colors.white)
-            : const Text("ثبت مشخصات"),
+            : const Text(AppStrings.completeProfileSubmit),
       ),
     );
   }

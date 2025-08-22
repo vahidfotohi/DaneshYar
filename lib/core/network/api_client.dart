@@ -26,13 +26,6 @@ class ApiClient {
         sendTimeout: const Duration(seconds: 25),
       ),
     );
-
-    _authService = AuthService(
-
-      authLessDio: _authlessDio,
-      storage: _storage,
-    );
-
     dio = Dio(
       BaseOptions(
         baseUrl: ApiEndpoints.baseUrl,
@@ -42,6 +35,14 @@ class ApiClient {
         sendTimeout: const Duration(seconds: 25),
       ),
     );
+
+    _authService = AuthService(
+      dio: dio,
+      authLessDio: _authlessDio,
+      storage: _storage,
+    );
+
+
 
     // لاگ فقط در Debug
     if (kDebugMode) {

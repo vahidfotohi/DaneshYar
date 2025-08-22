@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:daneshyar/features/authentication/auth/complete_profile/model/complete_profile_request.dart';
@@ -7,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../user/model/user_model.dart';
 import '../../../user/provider/user_provider.dart';
@@ -47,18 +47,34 @@ class CompleteProfileViewmodel extends StateNotifier<CompleteProfileState> {
   }
 
   Future<void> submitProfile() async {
+    developer.log("call submitProfile");
+
     if (state.fullName.length < 3) {
-      state = state.copyWith(hasError: true);
+      state = state.copyWith(
+        hasError: true,
+        errorMessage: 'نام کامل باید حداقل ۳ کاراکتر باشد',
+      );
       return;
     }
     state = state.copyWith(isLoading: true, hasError: false);
+
     try {
+      developer.log("call submitProfile ----> into try");
+
       final request = CompleteProfileRequest(
         fullName: state.fullName,
         avatar: state.imagePath,
       );
       final response = await _authRepository.completeProfile(request: request);
+      developer.log("submitProfile -----> response in try ${response.status}");
+
       if (response.status == true) {
+        developer.log("✅ API call successful. Setting isCompleted to true.");
+        state = state.copyWith(
+          isLoading: false,
+          isCompleted: true,
+          hasError: false,
+        );
         ref
             .read(userProvider.notifier)
             .setUser(
@@ -69,17 +85,19 @@ class CompleteProfileViewmodel extends StateNotifier<CompleteProfileState> {
                 imagePath: response.data.avatar,
               ),
             );
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('is_profile_completed', true);
-        state = state.copyWith(isLoading: false, isCompleted: true);
-        return;
+
+        await _authRepository.saveProfileCompletedStatus(true);
+        // final prefs = await SharedPreferences.getInstance();
+        // await prefs.setBool('is_profile_completed', true);
       } else {
-        state = state.copyWith(isLoading: false, hasError: true);
         throw Exception(response.errorMessage ?? 'خطا در تکمیل پروفایل');
       }
     } catch (e) {
-      state = state.copyWith(isLoading: false, hasError: true);
-      rethrow;
+      state = state.copyWith(
+        isLoading: false,
+        hasError: true,
+        errorMessage: e.toString(),
+      );
     }
   }
 }

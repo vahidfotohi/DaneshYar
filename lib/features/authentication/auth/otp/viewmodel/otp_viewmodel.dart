@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../../core/utils/validators.dart';
 import '../../repository/auth_repository.dart';
@@ -78,19 +77,8 @@ class OtpViewmodel extends StateNotifier<OtpState> {
       hasError: false,
       clearErrorMessage: true,
     );
-    // کد ثابت 111111 برای ورود
 
-    if (state.otpCode == "111111") {
-      // ذخیره وضعیت ورود کاربر
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLoggedIn', true);
-      await Future.delayed(const Duration(seconds: 1));
-      state = state.copyWith(isVerified: true, isLoading: false);
-      return;
-    }
     try {
-
-
       await _authRepository.verifyOtpAndLogin(
         code: state.otpCode,
         loginCode: _loginCode,

@@ -22,4 +22,14 @@ class AppStrings {
   static const sendCodeTopTerm = "لطفا شماره موبایل خود را وارد کنید.";
   static const sendCodePhoneNumber = "شماره موبایل";
   // sendCode
+
+  //complete Profile
+  static const completeProfileSubmit = "ثبت مشخصات";
+  static const completeProfileInputHintText = "اطلاعات را وارد کنید";
+  static const completeProfileInputLabel = "نام و نام خانوادگی";
+  static const completeProfileHeaderText = "مشخصات خود را کامل کنید";
+  static const completeProfileHeaderText2 = "این اطلاعات صرفاً جهت تکمیل ثبت نام شماست و هیچکس قادر به دیدن اطلاعات شما نخواهد بود.";
+  static const completeProfileSnackBarText = "خطا در ثبت اطلاعات پروفایل";
+
+  //complete Profile
 }

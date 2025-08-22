@@ -50,7 +50,7 @@ class Data {
   static fromJson(Map<String, dynamic> json) {
     return Data(
       id: json['id'] as int,
-      fullName: json['fullName'] as String,
+      fullName: json['fullname'] as String,
       phone: json['phone'] as String,
       avatar: json['avatar'] as String,
       active: json['active'] as bool,
@@ -61,7 +61,7 @@ class Data {
   toJson() {
     return {
       'id': id,
-      'fullName': fullName,
+      'fullname': fullName,
       'phone': phone,
       'avatar': avatar,
       'active': active,

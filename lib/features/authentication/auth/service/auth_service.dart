@@ -1,8 +1,8 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 
 import 'package:daneshyar/core/constants/api_endpoints.dart';
 import 'package:daneshyar/core/constants/strings.dart';
-import 'package:daneshyar/core/network/api_client.dart';
 import 'package:daneshyar/core/network/token_storage.dart';
 import 'package:daneshyar/features/authentication/auth/complete_profile/model/compelete_profile_response.dart';
 import 'package:daneshyar/features/authentication/auth/login/model/send_code_response.dart';
@@ -17,41 +17,58 @@ import '../login/model/send_code_request.dart';
 class AuthService {
   final Dio _authLessDio;
   final TokenStorage _storage;
-  final Dio _dio = ApiClient().dio;
+  final Dio _dio;
 
   Completer<void>? _refreshCompleter;
 
-  AuthService({required Dio authLessDio, required TokenStorage storage})
-      : _authLessDio = authLessDio,
-        _storage = storage;
+  AuthService({
+    required Dio authLessDio,
+    required TokenStorage storage,
+    required Dio dio,
+  }) : _authLessDio = authLessDio,
+       _dio = dio,
+       _storage = storage;
 
-  Future<String> sendCode({
-    required SendCodeRequest request,
-  }) async {
-    final response = await _authLessDio.post(ApiEndpoints.sendOtp,data: request.toJson(),
-        options: Options(contentType: Headers.jsonContentType,headers: {'Accept' : 'application/json'}));
+  Future<String> sendCode({required SendCodeRequest request}) async {
+    final response = await _authLessDio.post(
+      ApiEndpoints.sendOtp,
+      data: request.toJson(),
+      options: Options(
+        contentType: Headers.jsonContentType,
+        headers: {'Accept': 'application/json'},
+      ),
+    );
 
     final loginCodeResponse = SendCodeResponse.fromJson(response.data);
-    if (loginCodeResponse.status != true ) {
+    if (loginCodeResponse.status != true) {
       throw Exception(AppStrings.sendInvalidPhoneNumber);
     } else {
       return loginCodeResponse.data.loginCode;
     }
-
   }
 
-  Future<void> verifyOtpLogin({
-    required OtpVerifyRequest request,
-  }) async {
-    final response = await _authLessDio.post(ApiEndpoints.verifyOtp,
+  Future<void> verifyOtpLogin({required OtpVerifyRequest request}) async {
+    final response = await _authLessDio.post(
+      ApiEndpoints.verifyOtp,
       data: request.toJson(),
-      options: Options(contentType: Headers.jsonContentType, headers: {'content-type': 'application/json'}),
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+        headers: {'content-type': 'application/json'},
+      ),
     );
+    developer.log("--- OTP Verify Response Log ---");
+    developer.log("Raw Response from Server: ${response.data}");
     final verifyResponse = OtpVerifyResponse.fromJson(response.data);
-    if(verifyResponse.status != true || verifyResponse.data.accessToken.isEmpty) {
+    developer.log("Parsed Status: ${verifyResponse.status}"); // ۲. status پردازش شده را چاپ کن
+    developer.log("Parsed Access Token: ${verifyResponse.data.accessToken}"); // ۳. توکن پردازش شده را چاپ کن
+    developer.log("---------------------------------");
+    if (verifyResponse.status != true ||
+        verifyResponse.data.accessToken.isEmpty) {
+      developer.log("❌ Condition Failed! Throwing exception. Message: ${verifyResponse.errorMessage}");
       throw Exception(verifyResponse.errorMessage ?? 'خطا در ورود');
     }
     await _storage.writeAccessToken(verifyResponse.data.accessToken);
+    developer.log("✅ Access token successfully saved!");
     // await _storage.writeRefreshToken(refresh);
   }
 
@@ -68,11 +85,13 @@ class AuthService {
 
       final response = await _authLessDio.post(
         ApiEndpoints.refreshToken,
-        options: Options(headers: {'Authorization': 'Bearer $currentAccessToken'}),
+        options: Options(
+          headers: {'Authorization': 'Bearer $currentAccessToken'},
+        ),
       );
       final refreshToken = RefreshTokenResponse.fromJson(response.data);
       final newAccessToken = refreshToken.accessToken;
-      if(newAccessToken.isEmpty){
+      if (newAccessToken.isEmpty) {
         throw Exception('Refresh failed: New access token is empty');
       }
 
@@ -89,23 +108,29 @@ class AuthService {
 
   Future<CompleteProfileResponse> completeProfile({
     required CompleteProfileRequest request,
-}) async {
+  }) async {
+    developer.log("in auth service --> completeProfile ");
     final fromData = FormData.fromMap({
-      'fullName': request.fullName,
-      if (request.avatar != null &&
-          request.avatar!.isEmpty) 'avatar': await MultipartFile.fromFile(
-          request.avatar!),
+      'fullname': request.fullName,
+      if (request.avatar != null && request.avatar!.isEmpty)
+        'avatar': await MultipartFile.fromFile(request.avatar!),
     });
+    developer.log("form data : $fromData");
+
     final response = await _dio.post(
       ApiEndpoints.completeProfile,
       data: fromData,
+      options: Options(contentType: null),
+
     );
+    developer.log("response :  $response");
+
     return CompleteProfileResponse.fromJson(response.data);
   }
 
-
   Future<void> logout() async {
     await _storage.clearTokens();
+
     /// Todo Call api to logout
   }
 }
