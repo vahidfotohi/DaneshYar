@@ -1,6 +1,10 @@
-class UserProfileModel {
+class CompleteProfileRequest {
   final String fullName;
-  final String? imagePath;
+  final String? avatar;
 
-  UserProfileModel({required this.fullName, this.imagePath});
+  CompleteProfileRequest({
+    required this.fullName,
+    this.avatar,
+  });
+
 }

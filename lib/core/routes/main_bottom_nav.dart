@@ -32,7 +32,6 @@ class _MainBottomNavState extends State<MainBottomNav> {
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
     final theme = Theme.of(context);
-    final themeData = theme.textTheme;
     final themeColor = theme.colorScheme;
     return [
       PersistentBottomNavBarItem(

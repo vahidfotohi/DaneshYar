@@ -1,6 +1,8 @@
 import 'dart:io';
 
-
+import 'package:daneshyar/features/authentication/auth/complete_profile/model/complete_profile_request.dart';
+import 'package:daneshyar/features/authentication/auth/login/provider/send_code_provider.dart';
+import 'package:daneshyar/features/authentication/auth/repository/auth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
@@ -13,8 +15,11 @@ import '../state/complete_profile_state.dart';
 
 class CompleteProfileViewmodel extends StateNotifier<CompleteProfileState> {
   final Ref ref;
+  final AuthRepository _authRepository;
 
-  CompleteProfileViewmodel(this.ref) : super(CompleteProfileState.initial());
+  CompleteProfileViewmodel(this.ref)
+    : _authRepository = ref.watch(authRepositoryProvider),
+      super(CompleteProfileState.initial());
   UserModel? _user;
 
   UserModel? get user => _user;
@@ -41,27 +46,40 @@ class CompleteProfileViewmodel extends StateNotifier<CompleteProfileState> {
     }
   }
 
-  Future<void> submitProfile(String phoneNumber) async {
+  Future<void> submitProfile() async {
     if (state.fullName.length < 3) {
       state = state.copyWith(hasError: true);
       return;
     }
-    state = state.copyWith(isLoading: true);
-    await Future.delayed(const Duration(seconds: 2));
-    // if(state.fullName.)
-    ///Todo call api
-    ref
-        .read(userProvider.notifier)
-        .setUser(
-          _user = UserModel(
-            fullName: state.fullName,
-            phone: state.phoneNumber,
-            imagePath: state.imagePath,
-            id: "id",
-          ),
-        );
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('is_profile_completed', true);
-    state = state.copyWith(isLoading: false, isCompleted: true);
+    state = state.copyWith(isLoading: true, hasError: false);
+    try {
+      final request = CompleteProfileRequest(
+        fullName: state.fullName,
+        avatar: state.imagePath,
+      );
+      final response = await _authRepository.completeProfile(request: request);
+      if (response.status == true) {
+        ref
+            .read(userProvider.notifier)
+            .setUser(
+              UserModel(
+                id: response.data.id.toString(),
+                fullName: response.data.fullName,
+                phone: response.data.phone,
+                imagePath: response.data.avatar,
+              ),
+            );
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('is_profile_completed', true);
+        state = state.copyWith(isLoading: false, isCompleted: true);
+        return;
+      } else {
+        state = state.copyWith(isLoading: false, hasError: true);
+        throw Exception(response.errorMessage ?? 'خطا در تکمیل پروفایل');
+      }
+    } catch (e) {
+      state = state.copyWith(isLoading: false, hasError: true);
+      rethrow;
+    }
   }
 }

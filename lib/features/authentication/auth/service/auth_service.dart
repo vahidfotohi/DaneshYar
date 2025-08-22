@@ -2,18 +2,22 @@ import 'dart:async';
 
 import 'package:daneshyar/core/constants/api_endpoints.dart';
 import 'package:daneshyar/core/constants/strings.dart';
+import 'package:daneshyar/core/network/api_client.dart';
 import 'package:daneshyar/core/network/token_storage.dart';
+import 'package:daneshyar/features/authentication/auth/complete_profile/model/compelete_profile_response.dart';
 import 'package:daneshyar/features/authentication/auth/login/model/send_code_response.dart';
 import 'package:daneshyar/features/authentication/auth/otp/model/otp_verify_request.dart';
 import 'package:daneshyar/features/authentication/auth/otp/model/otp_verify_response.dart';
 import 'package:daneshyar/features/authentication/auth/refresh_token/model/refresh_token_response.dart';
 import 'package:dio/dio.dart';
 
+import '../complete_profile/model/complete_profile_request.dart';
 import '../login/model/send_code_request.dart';
 
 class AuthService {
   final Dio _authLessDio;
   final TokenStorage _storage;
+  final Dio _dio = ApiClient().dio;
 
   Completer<void>? _refreshCompleter;
 
@@ -83,8 +87,25 @@ class AuthService {
     }
   }
 
+  Future<CompleteProfileResponse> completeProfile({
+    required CompleteProfileRequest request,
+}) async {
+    final fromData = FormData.fromMap({
+      'fullName': request.fullName,
+      if (request.avatar != null &&
+          request.avatar!.isEmpty) 'avatar': await MultipartFile.fromFile(
+          request.avatar!),
+    });
+    final response = await _dio.post(
+      ApiEndpoints.completeProfile,
+      data: fromData,
+    );
+    return CompleteProfileResponse.fromJson(response.data);
+  }
+
+
   Future<void> logout() async {
     await _storage.clearTokens();
-    // Notify the app about logout, e.g., using a stream or state management solution.
+    /// Todo Call api to logout
   }
 }

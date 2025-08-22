@@ -31,13 +31,11 @@ class OtpViewmodel extends StateNotifier<OtpState> {
 
 
   void onOtpChanged(String value) {
-    developer.log("changed $value");
     state = state.copyWith(
       otpCode: value,
       hasError: false,
       clearErrorMessage: true,
     );
-    developer.log("state value ${state.otpCode}");
   }
 
   void startTimer() {
@@ -66,20 +64,20 @@ class OtpViewmodel extends StateNotifier<OtpState> {
 
     developer.log("State Value : ${state.otpCode}");
 
-    // final validationError = AppValidators.validateOtpCode(state.otpCode);
-    // if (validationError != null) {
-    //   state = state.copyWith(
-    //     hasError: true,
-    //     errorMessage: validationError,
-    //     isLoading: false,
-    //   );
-    //   return;
-    // }
-    // state = state.copyWith(
-    //   isLoading: true,
-    //   hasError: false,
-    //   clearErrorMessage: true,
-    // );
+    final validationError = AppValidators.validateOtpCode(state.otpCode);
+    if (validationError != null) {
+      state = state.copyWith(
+        hasError: true,
+        errorMessage: validationError,
+        isLoading: false,
+      );
+      return;
+    }
+    state = state.copyWith(
+      isLoading: true,
+      hasError: false,
+      clearErrorMessage: true,
+    );
     // کد ثابت 111111 برای ورود
 
     if (state.otpCode == "111111") {
@@ -91,8 +89,7 @@ class OtpViewmodel extends StateNotifier<OtpState> {
       return;
     }
     try {
-      developer.log("call try");
-      developer.log("state.code: ${state.otpCode}");
+
 
       await _authRepository.verifyOtpAndLogin(
         code: state.otpCode,
