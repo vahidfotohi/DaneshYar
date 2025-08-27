@@ -1,3 +1,4 @@
+import 'package:daneshyar/core/constants/api_endpoints.dart';
 import 'package:dio/dio.dart';
 import '../../features/authentication/auth/service/auth_service.dart';
 import 'token_storage.dart';
@@ -15,7 +16,7 @@ class AuthInterceptor extends QueuedInterceptorsWrapper {
   }
 
   bool _isAuthFree(String path) {
-    return path.contains('/client/login') || path.contains('/client/sendCode');
+    return path.contains(ApiEndpoints.sendOtp) || path.contains(ApiEndpoints.verifyOtp);
     // path.contains('/client/refresh');
   }
 
