@@ -30,6 +30,13 @@ class AppStrings {
   static const completeProfileHeaderText = "مشخصات خود را کامل کنید";
   static const completeProfileHeaderText2 = "این اطلاعات صرفاً جهت تکمیل ثبت نام شماست و هیچکس قادر به دیدن اطلاعات شما نخواهد بود.";
   static const completeProfileSnackBarText = "خطا در ثبت اطلاعات پروفایل";
-
   //complete Profile
+
+  // category section
+  static const categoryTitle = "دسته بندی ها";
+  static const categoryError = "خطا در دریافت دسته بندی ها";
+  static const categoryShowAll = "دسته بندی یافت نشد";
+  static const categoryRetry = "تلاش مجدد";
+
+  // category section
 }

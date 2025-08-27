@@ -5,6 +5,7 @@ class ApiEndpoints {
   static const String verifyOtp = '/client/login';
   static const String refreshToken = '/client/refresh';
   static const String completeProfile = '/client/register';
+  static const String categories = '/category';
 
 
   static String full(String endpoint) {
