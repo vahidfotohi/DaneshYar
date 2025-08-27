@@ -1,4 +1,4 @@
-import 'package:daneshyar/features/home/view/widgets/category/all_categories_screen.dart';
+import 'package:daneshyar/features/home/category/view/widgets/all_categories_screen.dart';
 import 'package:daneshyar/features/onboarding/view/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
