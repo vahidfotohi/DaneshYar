@@ -1,6 +1,6 @@
 class ApiEndpoints {
 
-  static const String baseUrl = 'http://193.242.208.208:8080/api';
+  static const String baseUrl = '***********************';
   static const String sendOtp = '/client/sendCode';
   static const String verifyOtp = '/client/login';
   static const String refreshToken = '/client/refresh';
