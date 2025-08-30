@@ -1,5 +1,6 @@
 import 'package:daneshyar/features/authentication/auth/complete_profile/model/compelete_profile_response.dart';
 import 'package:daneshyar/features/authentication/auth/login/model/send_code_request.dart';
+import 'package:daneshyar/features/authentication/auth/login/model/send_code_response.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/network/api_client.dart';
@@ -10,14 +11,15 @@ import 'dart:developer' as developer;
 class AuthRepository {
   final ApiClient _api = ApiClient();
 
-  Future<String> sendCode({
+  Future<SendCodeResponse> sendCode({
     required String phoneNumber,
   }) async {
     try {
       final request = SendCodeRequest(phoneNumber: phoneNumber);
-      final loginCode = await _api.authService.sendCode(request: request);
-      developer.log(loginCode);
-      return loginCode;
+
+      final response = await _api.authService.sendCode(request: request);
+
+      return response ;
     } on DioException catch (e) {
       throw mapDioError(e);
     } catch (e) {

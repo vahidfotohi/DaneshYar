@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer' as developer;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/utils/validators.dart';
@@ -27,7 +26,6 @@ class OtpViewmodel extends StateNotifier<OtpState> {
   void initialize() {
     startTimer();
   }
-
 
   void onOtpChanged(String value) {
     state = state.copyWith(
@@ -60,8 +58,6 @@ class OtpViewmodel extends StateNotifier<OtpState> {
   }
 
   Future<void> verifyOtp() async {
-
-    developer.log("State Value : ${state.otpCode}");
 
     final validationError = AppValidators.validateOtpCode(state.otpCode);
     if (validationError != null) {
@@ -97,7 +93,6 @@ class OtpViewmodel extends StateNotifier<OtpState> {
         errorMessage: errorMessage,
       );
     }
-
   }
 
   Future<void> resendCode() async {
@@ -111,7 +106,7 @@ class OtpViewmodel extends StateNotifier<OtpState> {
       final newLoginCode = await _authRepository.sendCode(
         phoneNumber: phoneNumber,
       );
-      _loginCode = newLoginCode;
+      _loginCode = newLoginCode.data.loginCode;
       state = state.copyWith(isLoading: false);
       startTimer();
     } catch (e) {
@@ -129,6 +124,4 @@ class OtpViewmodel extends StateNotifier<OtpState> {
       );
     }
   }
-
-
 }

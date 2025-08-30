@@ -29,7 +29,7 @@ class AuthService {
        _dio = dio,
        _storage = storage;
 
-  Future<String> sendCode({required SendCodeRequest request}) async {
+  Future<SendCodeResponse> sendCode({required SendCodeRequest request}) async {
     final response = await _authLessDio.post(
       ApiEndpoints.sendOtp,
       data: request.toJson(),
@@ -43,7 +43,7 @@ class AuthService {
     if (loginCodeResponse.status != true) {
       throw Exception(AppStrings.sendInvalidPhoneNumber);
     } else {
-      return loginCodeResponse.data.loginCode;
+      return loginCodeResponse;
     }
   }
 
@@ -56,20 +56,14 @@ class AuthService {
         headers: {'content-type': 'application/json'},
       ),
     );
-    developer.log("--- OTP Verify Response Log ---");
-    developer.log("Raw Response from Server: ${response.data}");
+
     final verifyResponse = OtpVerifyResponse.fromJson(response.data);
-    developer.log("Parsed Status: ${verifyResponse.status}"); // ۲. status پردازش شده را چاپ کن
-    developer.log("Parsed Access Token: ${verifyResponse.data.accessToken}"); // ۳. توکن پردازش شده را چاپ کن
-    developer.log("---------------------------------");
+
     if (verifyResponse.status != true ||
         verifyResponse.data.accessToken.isEmpty) {
-      developer.log("❌ Condition Failed! Throwing exception. Message: ${verifyResponse.errorMessage}");
       throw Exception(verifyResponse.errorMessage ?? 'خطا در ورود');
     }
     await _storage.writeAccessToken(verifyResponse.data.accessToken);
-    developer.log("✅ Access token successfully saved!");
-    // await _storage.writeRefreshToken(refresh);
   }
 
   Future<void> refreshTokenIfNeeded() async {
@@ -121,7 +115,6 @@ class AuthService {
       ApiEndpoints.completeProfile,
       data: fromData,
       options: Options(contentType: null),
-
     );
     developer.log("response :  $response");
 

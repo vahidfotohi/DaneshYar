@@ -40,6 +40,7 @@ class _LoginScreenState extends ConsumerState<SendCodeScreen> {
           arguments: {
             'phoneNumber': next.phoneNumber,
             'loginCode': next.loginCode,
+            'userType': next.userType,
           },
         );
         ref.read(sendCodeViewModelProvider.notifier).onNavigationComplete();

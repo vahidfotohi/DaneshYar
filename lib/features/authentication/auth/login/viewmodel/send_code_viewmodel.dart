@@ -1,4 +1,3 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:daneshyar/core/utils/validators.dart';
 
@@ -34,13 +33,16 @@ class SendCodeViewmodel extends StateNotifier<SendCodeState> {
     );
 
     try {
-      final loginCode = await _authRepository.sendCode(phoneNumber: phone);
-      developer.log(loginCode);
-      state = state.copyWith(loginCode: loginCode, navigateToOtp: true);
+      final response = await _authRepository.sendCode(phoneNumber: phone);
+      state = state.copyWith(
+        loginCode: response.data.loginCode,
+        userType: response.data.type,
+        navigateToOtp: true,
+      );
     } catch (e) {
       String errorMessage = "خطا در ارسال کد تایید";
       if (e is PrettyError) {
-        errorMessage =  "خطا در اتصال به شبکه لطفا دوباره تلاش کنید";
+        errorMessage = "خطا در اتصال به شبکه لطفا دوباره تلاش کنید";
       }
       state = state.copyWith(errorMessage: errorMessage, hasError: true);
     } finally {
