@@ -34,9 +34,9 @@ class SendCodeViewmodel extends StateNotifier<SendCodeState> {
 
     try {
       final response = await _authRepository.sendCode(phoneNumber: phone);
+      developer.log('$response');
       state = state.copyWith(
         loginCode: response.data.loginCode,
-        userType: response.data.type,
         navigateToOtp: true,
       );
     } catch (e) {

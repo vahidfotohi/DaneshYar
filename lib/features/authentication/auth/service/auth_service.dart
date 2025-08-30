@@ -47,7 +47,7 @@ class AuthService {
     }
   }
 
-  Future<void> verifyOtpLogin({required OtpVerifyRequest request}) async {
+  Future<OtpVerifyResponse> verifyOtpLogin({required OtpVerifyRequest request}) async {
     final response = await _authLessDio.post(
       ApiEndpoints.verifyOtp,
       data: request.toJson(),
@@ -64,6 +64,8 @@ class AuthService {
       throw Exception(verifyResponse.errorMessage ?? 'خطا در ورود');
     }
     await _storage.writeAccessToken(verifyResponse.data.accessToken);
+
+    return verifyResponse;
   }
 
   Future<void> refreshTokenIfNeeded() async {

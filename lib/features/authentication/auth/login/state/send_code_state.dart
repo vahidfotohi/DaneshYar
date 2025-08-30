@@ -5,7 +5,6 @@ class SendCodeState {
   final bool isLoading;
   final bool navigateToOtp;
   final String? loginCode;
-  final String? userType;
 
   const SendCodeState({
     required this.phoneNumber,
@@ -13,7 +12,6 @@ class SendCodeState {
     required this.isLoading,
     this.errorMessage,
     this.loginCode,
-    this.userType,
     this.navigateToOtp = false,
   });
 
@@ -33,7 +31,6 @@ class SendCodeState {
     bool? isLoading,
     bool? navigateToOtp,
     String? loginCode,
-    String? userType,
   }) {
     return SendCodeState(
       phoneNumber: phoneNumber ?? this.phoneNumber,
@@ -42,7 +39,6 @@ class SendCodeState {
       isLoading: isLoading ?? this.isLoading,
       navigateToOtp: navigateToOtp ?? this.navigateToOtp,
       loginCode: loginCode ?? this.loginCode,
-      userType: userType ?? this.userType
     );
   }
 }

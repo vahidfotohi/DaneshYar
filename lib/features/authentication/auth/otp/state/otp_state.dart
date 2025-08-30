@@ -4,6 +4,7 @@ class OtpState {
   final bool isLoading;
   final bool isVerified;
   final bool hasError;
+  final String userType;
   final bool isResendAvailable;
   final String? errorMessage;
 
@@ -14,6 +15,7 @@ class OtpState {
     required this.isLoading,
     required this.isVerified,
     required this.hasError,
+    required this.userType,
     this.errorMessage,
   });
 
@@ -26,11 +28,13 @@ class OtpState {
       hasError: false,
       isResendAvailable: false,
       errorMessage: null,
+      userType: 'register',
     );
   }
 
   OtpState copyWith({
     String? otpCode,
+    String? userType,
     int? counter,
     bool? isLoading,
     bool? isVerified,
@@ -41,6 +45,7 @@ class OtpState {
   }) {
     return OtpState(
       otpCode: otpCode ?? this.otpCode,
+      userType: userType ?? this.userType,
       counter: counter ?? this.counter,
       isLoading: isLoading ?? this.isLoading,
       isVerified: isVerified ?? this.isVerified,

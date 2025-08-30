@@ -1,6 +1,7 @@
 import 'package:daneshyar/features/authentication/auth/complete_profile/model/compelete_profile_response.dart';
 import 'package:daneshyar/features/authentication/auth/login/model/send_code_request.dart';
 import 'package:daneshyar/features/authentication/auth/login/model/send_code_response.dart';
+import 'package:daneshyar/features/authentication/auth/otp/model/otp_verify_response.dart';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/network/api_client.dart';
@@ -27,14 +28,15 @@ class AuthRepository {
     }
   }
 
-  Future<void> verifyOtpAndLogin({
+  Future<OtpVerifyResponse> verifyOtpAndLogin({
     required String code,
     required String loginCode,
 
 }) async {
     try {
       final request = OtpVerifyRequest(code: code, loginCode: loginCode);
-      await _api.authService.verifyOtpLogin(request: request);
+      final response =  await _api.authService.verifyOtpLogin(request: request);
+      return response;
     } on DioException catch (e) {
       throw mapDioError(e);
     } catch (e) {

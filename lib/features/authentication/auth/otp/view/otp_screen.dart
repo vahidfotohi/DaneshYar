@@ -13,12 +13,11 @@ import '../state/otp_state.dart';
 class OtpScreen extends ConsumerStatefulWidget {
   final String loginCode;
   final String phoneNumber;
-  final String userType;
+
 
   const OtpScreen({
     super.key,
     required this.phoneNumber,
-    required this.userType,
     required this.loginCode,
   });
 
@@ -78,7 +77,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
       }
       if (next.isVerified) {
         // otpNotifier.stopTimer();
-        if (widget.userType == 'login') {
+        if (next.userType == 'login') {
           Navigator.pushReplacementNamed(context, AppRoute.mainScreen);
         } else {
           Navigator.pushReplacementNamed(

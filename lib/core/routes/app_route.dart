@@ -74,13 +74,12 @@ class AppRoute {
         }
         final phoneNumber = args['phoneNumber'] as String?;
         final loginCode = args['loginCode'] as String?;
-        final userType = args['userType'] as String?;
-        if (phoneNumber == null || loginCode == null || userType == null) {
+        if (phoneNumber == null || loginCode == null ) {
           return _errorRoute("Arguments is missing.");
         }
         return MaterialPageRoute(
           builder: (_) =>
-              OtpScreen(phoneNumber: phoneNumber, loginCode: loginCode ,userType: userType),
+              OtpScreen(phoneNumber: phoneNumber, loginCode: loginCode ),
         );
       case '/mainScreen':
         return MaterialPageRoute(builder: (_) => const MainBottomNav());

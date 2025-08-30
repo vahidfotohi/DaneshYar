@@ -45,7 +45,7 @@ class Data {
 
   static fromJson(json) {
     return Data(
-      type: json['type'] ?? '',
+      type: json['type'] ?? 'register',
       accessToken: json['access_token'] ?? '',
       tokenType: json['token_type'] ?? '',
       expiresIn: json['expires_in'] ?? 0,

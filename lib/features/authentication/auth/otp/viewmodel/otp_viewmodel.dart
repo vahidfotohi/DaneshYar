@@ -75,11 +75,11 @@ class OtpViewmodel extends StateNotifier<OtpState> {
     );
 
     try {
-      await _authRepository.verifyOtpAndLogin(
+      final response = await _authRepository.verifyOtpAndLogin(
         code: state.otpCode,
         loginCode: _loginCode,
       );
-      state = state.copyWith(isVerified: true, isLoading: false);
+      state = state.copyWith(isVerified: true, isLoading: false , userType: response.data.type);
     } catch (e) {
       String errorMessage = 'خطا در تایید کد';
       if (e is PrettyError) {

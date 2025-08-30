@@ -23,14 +23,12 @@ class SendCodeResponse {
 }
 
 class Data {
-  final String type;
   final String loginCode;
 
-  Data({required this.type, required this.loginCode});
+  Data({ required this.loginCode});
 
   factory Data.fromJson(Map<String, dynamic> json) {
     return Data(
-      type: json['type'],
       loginCode: json['login_code'],
     );
   }
