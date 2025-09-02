@@ -1,5 +1,6 @@
 import 'package:daneshyar/core/constants/api_endpoints.dart';
 import 'package:daneshyar/features/home/category/model/category_model.dart';
+import 'package:daneshyar/features/home/category/model/category_response.dart';
 import 'package:dio/dio.dart';
 
 class CategoryService {
@@ -7,14 +8,12 @@ class CategoryService {
   
   CategoryService(this._dio);
   
-  Future<List<CategoryModel>> getAllCategories() async{
+  Future<CategoryResponse> getAllCategories() async{
     try{
       final response = await _dio.get(ApiEndpoints.categories);
-      final List<dynamic> jsonList = response.data['data'];
 
-      final categories = jsonList.map((category) => CategoryModel.fromJson(category)).toList();
 
-      return categories;
+      return CategoryResponse.fromJson(response.data);
     }catch(e){
       rethrow;
     }

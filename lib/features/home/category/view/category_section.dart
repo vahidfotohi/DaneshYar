@@ -1,6 +1,7 @@
 import 'package:daneshyar/core/constants/strings.dart';
 import 'package:daneshyar/core/routes/app_route.dart';
 import 'package:daneshyar/features/home/category/provider/category_provider.dart';
+import 'package:daneshyar/features/home/category/view/widgets/shimmer_loading_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -49,7 +50,7 @@ class CategorySection extends ConsumerWidget {
           child: Builder(
             builder: (context) {
               if(categoryState.isLoading){
-                return const Center(child: CircularProgressIndicator());
+                return const ShimmerLoadingGrid();
               }
               if(categoryState.hasError){
                 return const SizedBox.shrink();
@@ -91,8 +92,7 @@ class CategorySection extends ConsumerWidget {
                             child: Padding(
                               padding: const EdgeInsets.all(10),
                               child: SvgPicture.asset(
-                                item.imageUrl,
-
+                                item.icon,
                                 height: 54,
                                 width: 54,
                                 colorFilter: ColorFilter.mode(

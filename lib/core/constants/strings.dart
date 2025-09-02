@@ -35,8 +35,7 @@ class AppStrings {
   // category section
   static const categoryTitle = "دسته بندی ها";
   static const categoryError = "خطا در دریافت دسته بندی ها";
-  static const categoryShowAll = "دسته بندی یافت نشد";
-  static const categoryRetry = "تلاش مجدد";
+  static const categoryShowAll = "مشاهده همه";
 
   // category section
 }
