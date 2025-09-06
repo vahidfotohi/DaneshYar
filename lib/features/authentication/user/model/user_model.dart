@@ -1,31 +1,41 @@
 class UserModel {
   final String id;
   final String fullName;
-  final String? imagePath;
+  final String? avatar;
   final String phone;
+  final bool active;
+  final bool registered;
 
   const UserModel({
     required this.id,
     required this.fullName,
     required this.phone,
-    this.imagePath,
+    this.avatar,
+    this.active = false,
+    this.registered = false,
   });
 
   // bool get isProfileCompleted => fullName.isNotEmpty && imagePath != null;
 
-  factory UserModel.initial() =>
-      const UserModel(fullName: "", phone: "", imagePath: null, id: "");
+  factory UserModel.initial() => const UserModel(
+    fullName: "",
+    phone: "",
+    avatar: null,
+    id: "",
+    active: false,
+    registered: false,
+  );
 
   UserModel copyWith({
     String? fullName,
-    String? imagePath,
+    String? avatar,
     String? phone,
     String? id,
   }) {
     return UserModel(
       fullName: fullName ?? this.fullName,
       phone: phone ?? this.phone,
-      imagePath: imagePath ?? this.imagePath,
+      avatar: avatar ?? this.avatar,
       id: id ?? this.id,
     );
   }
@@ -33,7 +43,7 @@ class UserModel {
   Map<String, dynamic> toJson() {
     return {
       'fullName': fullName,
-      'imagePath': imagePath,
+      'avatar': avatar,
       'phone': phone,
       'id': id,
     };
@@ -42,7 +52,7 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       fullName: json['fullName'] ?? '',
-      imagePath: json['imagePath'],
+      avatar: json['avatar'],
       phone: json['phone'] ?? '',
       id: json['id'] ?? '',
     );

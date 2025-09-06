@@ -82,7 +82,9 @@ class CompleteProfileViewmodel extends StateNotifier<CompleteProfileState> {
                 id: response.data.id.toString(),
                 fullName: response.data.fullName,
                 phone: response.data.phone,
-                imagePath: response.data.avatar,
+                avatar: response.data.avatar,
+                registered: response.data.registered,
+                active: response.data.active,
               ),
             );
 
