@@ -1,3 +1,4 @@
+import 'package:daneshyar/core/constants/api_endpoints.dart';
 import 'package:daneshyar/core/network/api_client.dart';
 import 'package:daneshyar/core/network/error_mapper.dart';
 import 'package:daneshyar/features/home/category/model/category_model.dart';
@@ -13,7 +14,7 @@ class CategoryRepository {
         final categories = response.data.map((dataItem) => CategoryModel(
           id: dataItem.id,
           title: dataItem.title,
-          icon: "storage/${dataItem.icon}"
+          icon: "${ApiEndpoints.baseUrl}/storage/${dataItem.icon}"
         ),).toList();
         return categories;
       }else{

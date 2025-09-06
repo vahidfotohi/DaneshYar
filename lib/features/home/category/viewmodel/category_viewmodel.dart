@@ -1,6 +1,4 @@
-import 'package:daneshyar/features/home/category/model/category_model.dart';
 import 'package:daneshyar/features/home/category/state/category_state.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../repository/category_repository.dart';

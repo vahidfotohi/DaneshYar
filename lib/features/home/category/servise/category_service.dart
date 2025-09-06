@@ -1,5 +1,4 @@
 import 'package:daneshyar/core/constants/api_endpoints.dart';
-import 'package:daneshyar/features/home/category/model/category_model.dart';
 import 'package:daneshyar/features/home/category/model/category_response.dart';
 import 'package:dio/dio.dart';
 

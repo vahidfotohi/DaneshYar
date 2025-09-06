@@ -3,7 +3,6 @@ import 'package:daneshyar/features/home/category/provider/category_provider.dart
 import 'package:daneshyar/features/home/category/view/widgets/shimmer_loading_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 
 class AllCategoriesScreen extends ConsumerWidget {
   const AllCategoriesScreen({super.key});
@@ -76,7 +75,7 @@ class AllCategoriesScreen extends ConsumerWidget {
                               ),
                               shape: BoxShape.circle,
                             ),
-                            child: SvgPicture.asset(item.icon),
+                            child: Image.network(item.icon , width: 54, height: 54,),
                           ),
                         ),
                         const SizedBox(height: 12),
