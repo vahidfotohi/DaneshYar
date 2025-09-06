@@ -13,7 +13,7 @@ class AppColors {
   //   end: Alignment.topLeft,
   // );
   static const Color primary = Color(0xFF246BFD);
-  static const Color starColor = Color(0xFFFDCC0D);
+  static const Color starColor = Color(0xFFFDB624);
   static const Color hintText = Color(0xffADADAD);
 
   //light theme colors

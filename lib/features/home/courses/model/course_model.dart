@@ -1,10 +1,11 @@
 enum Suggested{
+  none,
   bestseller,
   suggested,
 }
 class CourseModel {
   final String id;
-  final String imagePath;
+  final String cover;
   final String? star;
   final bool isMarked;
   final String title;
@@ -15,7 +16,7 @@ class CourseModel {
 
   CourseModel({
     required this.id,
-    required this.imagePath,
+    required this.cover,
     required this.isMarked,
     required this.title,
     required this.suggested,
@@ -24,18 +25,4 @@ class CourseModel {
     this.star,
     this.offerPrice,
   });
-
-  factory CourseModel.fromJson(Map<String, dynamic> json) {
-    return CourseModel(
-      id: json['id'],
-      imagePath: json['imagePath'],
-      star: json['star'],
-      isMarked: json['isMarked'],
-      title: json['title'],
-      suggested: json['suggested'],
-      mentorName: json['mentorName'],
-      price: json['price'],
-      offerPrice: json['offerPrice'],
-    );
-  }
 }

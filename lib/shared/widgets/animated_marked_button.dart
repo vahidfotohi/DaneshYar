@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../../shared/widgets/glass_morphism.dart';
+import 'glass_morphism.dart';
 
 class AnimatedMarkedButton extends StatefulWidget {
   final bool isFavorite;
