@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../home_state/appbar_state.dart';
-import '../home_viewmodel/appbar_viewmodel.dart';
+import '../state/appbar_state.dart';
+import '../viewmodel/appbar_viewmodel.dart';
 
 final appbarViewmodelProvider =
     StateNotifierProvider<AppBarViewModel, AppBarState>(
