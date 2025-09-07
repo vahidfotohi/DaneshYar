@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:daneshyar/core/constants/constants.dart';
 import 'package:daneshyar/core/utils/keyboard.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
-
-import '../../features/home/view/home_screen.dart';
+import '../../features/home/home_view/home_screen.dart';
 
 class MainBottomNav extends StatefulWidget {
   const MainBottomNav({super.key});

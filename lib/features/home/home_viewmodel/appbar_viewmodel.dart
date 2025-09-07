@@ -1,6 +1,5 @@
-// lib/features/home/viewmodel/appbar_viewmodel.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../state/appbar_state.dart';
+import '../home_state/appbar_state.dart';
 
 class AppBarViewModel extends StateNotifier<AppBarState> {
   AppBarViewModel() : super(AppBarState.initial());

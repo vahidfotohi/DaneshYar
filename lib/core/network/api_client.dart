@@ -1,10 +1,10 @@
 import 'package:daneshyar/core/constants/api_endpoints.dart';
 import 'package:daneshyar/features/home/category/servise/category_service.dart';
 import 'package:daneshyar/features/home/courses/service/course_service.dart';
-import 'package:daneshyar/features/home/service/home_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../../features/authentication/auth/service/auth_service.dart';
+import '../../features/home/home_service/home_service.dart';
 import 'auth_interceptor.dart';
 import 'token_storage.dart';
 
@@ -79,7 +79,9 @@ class ApiClient {
   AuthService get authService => _authService;
 
   CategoryService get categoryService => _categoryService;
+
   CourseService get courseService => _courseService;
+
   HomeService get homeService => _homeService;
 
   Future<Response<T>> get<T>(

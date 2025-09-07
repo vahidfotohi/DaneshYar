@@ -1,7 +1,6 @@
-import 'package:daneshyar/features/home/model/home_response.dart';
 import 'package:dio/dio.dart';
 import '../../../core/constants/api_endpoints.dart';
-import '../../../core/network/api_client.dart';
+import '../home_model/home_response.dart';
 
 class HomeService {
   final Dio _dio;

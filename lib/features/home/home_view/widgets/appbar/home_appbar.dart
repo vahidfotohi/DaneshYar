@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../../authentication/user/provider/user_provider.dart';
-import '../../../provider/appbar_provider.dart';
+import '../../../home_provider/appbar_provider.dart';
 
 class HomeAppBar extends ConsumerWidget {
   const HomeAppBar({super.key});

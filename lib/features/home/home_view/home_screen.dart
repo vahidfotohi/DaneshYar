@@ -1,10 +1,9 @@
-import 'package:daneshyar/features/home/view/widgets/appbar/home_appbar.dart';
+import 'package:daneshyar/features/home/home_view/widgets/appbar/home_appbar.dart';
 import 'package:daneshyar/features/home/category/view/category_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../courses/view/courses.dart';
-import '../provider/home_provider.dart';
+import '../home_provider/home_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
 

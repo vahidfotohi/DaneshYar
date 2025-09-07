@@ -2,7 +2,6 @@ import 'package:daneshyar/core/network/api_client.dart';
 import 'package:daneshyar/core/network/error_mapper.dart';
 import 'package:daneshyar/features/authentication/user/model/user_model.dart';
 import 'package:daneshyar/features/home/category/model/category_model.dart';
-import 'package:daneshyar/features/home/model/home_response.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart' as intl;
 

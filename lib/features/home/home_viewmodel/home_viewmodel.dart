@@ -1,10 +1,9 @@
 import 'package:daneshyar/features/authentication/user/provider/user_provider.dart';
 import 'package:daneshyar/features/home/category/provider/category_provider.dart';
-import 'package:daneshyar/features/home/repository/home_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../courses/provider/course_provider.dart';
-import '../state/home_state.dart';
+import '../home_repository/home_repository.dart';
+import '../home_state/home_state.dart';
 
 class HomeViewmodel extends StateNotifier<HomeState> {
   final HomeRepository _homeRepository;
