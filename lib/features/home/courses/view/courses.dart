@@ -50,7 +50,7 @@ class PopularCourses extends ConsumerWidget {
 
         if (!courseState.isLoading && !courseState.hasError)
           SizedBox(
-            height: 280,
+            height: 310,
             child: ListView.separated(
               padding: const EdgeInsets.all(16),
               shrinkWrap: true,

@@ -13,7 +13,7 @@ class PopularCoursesCard extends StatelessWidget {
 
 
     return SizedBox(
-      width: 280,
+      width: 310,
       child: Card(
         color: Theme.of(context).colorScheme.surfaceBright,
         elevation: 3,
