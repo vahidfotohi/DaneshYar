@@ -4,7 +4,6 @@ import 'package:daneshyar/features/authentication/user/model/user_model.dart';
 import 'package:daneshyar/features/home/category/model/category_model.dart';
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart' as intl;
-
 import '../../../core/constants/api_endpoints.dart';
 import '../courses/model/course_model.dart';
 
@@ -21,7 +20,9 @@ class CleanHomeData {
 }
 
 class HomeRepository {
-  final ApiClient _apiClient = ApiClient();
+  final ApiClient _apiClient;
+
+  HomeRepository(this._apiClient);
 
   Future<CleanHomeData> getHomeData() async {
     try {
@@ -48,7 +49,9 @@ class HomeRepository {
 
         final courses = homeData.courses.map((course) {
           final formatter = intl.NumberFormat.decimalPattern();
-          String coursePrice = formatter.format(int.parse(course.price)).replaceAll(',', '/');
+          String coursePrice = formatter
+              .format(int.parse(course.price))
+              .replaceAll(',', '/');
           Suggested suggestedCourse = Suggested.none;
           if (course.flagPublished == "1") {
             suggestedCourse = Suggested.suggested;
@@ -64,12 +67,13 @@ class HomeRepository {
           );
         }).toList();
 
-
-        return CleanHomeData( courses: courses,categories: categories,user: user);
-      } else {
-        throw Exception(
-          response.errorMessage ?? 'خطا در دریافت اطلاعات ',
+        return CleanHomeData(
+          courses: courses,
+          categories: categories,
+          user: user,
         );
+      } else {
+        throw Exception(response.errorMessage ?? 'خطا در دریافت اطلاعات ');
       }
     } on DioException catch (e) {
       throw mapDioError(e);

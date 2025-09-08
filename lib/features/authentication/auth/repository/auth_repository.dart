@@ -10,7 +10,9 @@ import '../complete_profile/model/complete_profile_request.dart';
 import '../otp/model/otp_verify_request.dart';
 import 'dart:developer' as developer;
 class AuthRepository {
-  final ApiClient _api = ApiClient();
+  final ApiClient _api;
+
+  AuthRepository(this._api);
 
   Future<SendCodeResponse> sendCode({
     required String phoneNumber,

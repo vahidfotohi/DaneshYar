@@ -5,7 +5,9 @@ import 'package:daneshyar/features/home/category/model/category_model.dart';
 import 'package:dio/dio.dart';
 
 class CategoryRepository {
-  final ApiClient _apiClient = ApiClient();
+  final ApiClient _apiClient ;
+
+  CategoryRepository(this._apiClient);
 
   Future<List<CategoryModel>> getAllCategories() async {
     try {

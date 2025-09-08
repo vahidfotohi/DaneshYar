@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../../../../core/network/network_providers.dart';
 import '../../../user/model/user_model.dart';
 import '../../../user/provider/user_provider.dart';
 import '../state/complete_profile_state.dart';

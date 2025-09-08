@@ -18,13 +18,9 @@ class HomeViewmodel extends StateNotifier<HomeState> {
       final cleanData = await _homeRepository.getHomeData();
       ref.read(userProvider.notifier).setUser(cleanData.user);
 
-      ref.read(categoryProvider.notifier).state = ref
-          .read(categoryProvider)
-          .copyWith(categories: cleanData.categories, isLoading: false);
+      ref.read(categoryProvider.notifier).initializeData(cleanData.categories);
 
-      ref.read(courseProvider.notifier).state = ref
-          .read(courseProvider)
-          .copyWith(courses: cleanData.courses, isLoading: false);
+      ref.read(courseProvider.notifier).initializeData(cleanData.courses);
 
       state = state.copyWith(isLoading: false);
     } catch (e) {

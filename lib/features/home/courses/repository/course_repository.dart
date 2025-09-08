@@ -4,7 +4,9 @@ import 'package:daneshyar/features/home/courses/model/course_model.dart';
 import 'package:dio/dio.dart';
 
 class CourseRepository {
-  final ApiClient _apiClient = ApiClient();
+  final ApiClient _apiClient;
+
+  CourseRepository(this._apiClient);
 
   Future<List<CourseModel>> getAllCourses() async {
     try {
