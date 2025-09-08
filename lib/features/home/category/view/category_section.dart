@@ -1,7 +1,6 @@
 import 'package:daneshyar/core/constants/strings.dart';
 import 'package:daneshyar/core/routes/app_route.dart';
 import 'package:daneshyar/features/home/category/provider/category_provider.dart';
-import 'package:daneshyar/features/home/category/view/widgets/shimmer_loading_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -48,12 +47,6 @@ class CategorySection extends ConsumerWidget {
           height: 130,
           child: Builder(
             builder: (context) {
-              if (categoryState.isLoading) {
-                return const ShimmerLoadingGrid();
-              }
-              if (categoryState.hasError) {
-                return const SizedBox.shrink();
-              }
               final categories = categoryState.categories;
               return ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -99,10 +92,7 @@ class CategorySection extends ConsumerWidget {
                                     (context, child, loadingProgress) {
                                       return loadingProgress == null
                                           ? child
-                                          : const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
+                                          : const Center(child: null);
                                     },
 
                                 errorBuilder: (context, error, stackTrace) {

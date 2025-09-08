@@ -24,107 +24,142 @@ class HomeAppBar extends ConsumerWidget {
           bottomRight: Radius.circular(30),
         ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 50),
       width: double.infinity,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // نوار بالا
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // دکمه نوتیفیکیشن
-              Container(
-                height: 45,
-                width: 45,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primaryFixedDim.withValues(
-                    alpha: 0.6,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Stack(
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.notifications,
-                        color: Colors.white,
-                      ),
-                    ),
-                    if (appbarState.hasNotifications)
-                      Positioned(
-                        top: 15,
-                        left: 23,
-                        child: Container(
-                          height: 7,
-                          width: 7,
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.error,
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
 
-              // خوش‌آمدگویی
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    "سلام ${user?.fullName ?? "کاربر"} 👋",
-                    style: theme.textTheme.titleMedium!.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                    textDirection: TextDirection.rtl,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "فقط کافیه که شروع کنی...",
-                    textDirection: TextDirection.rtl,
-                    style: theme.textTheme.bodySmall!.copyWith(
-                      color: Colors.white70,
-                    ),
-                  ),
-                ],
+
+      child: Stack(
+        clipBehavior: Clip.antiAlias,
+        children: [
+
+          Positioned(
+            bottom: 0,
+            left: -5,
+            child: Image.asset(
+              "assets/images/home/Pattern1.png",
+              color: Colors.black,
+              width: 250,
+              height: 250,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Positioned(
+            bottom: -50,
+            right: -20,
+            child: RotationTransition(
+              turns: const AlwaysStoppedAnimation(-28/ 360),
+              alignment: Alignment.center,
+              child: Image.asset(
+                "assets/images/home/Pattern2.png",
+                color: Colors.black,
+                width: 250,
+                height: 250,
+                fit: BoxFit.contain,
+
               ),
-            ],
+            ),
           ),
 
-          const SizedBox(height: 24),
 
-          // باکس جستجو
-          TextField(
-            textDirection: TextDirection.rtl,
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              hintText: "جستجو کن ....",
-              hintStyle: theme.textTheme.bodyMedium!.copyWith(
-                color: Colors.grey,
-              ),
-              hintTextDirection: TextDirection.rtl,
-              prefixIcon: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: SvgPicture.asset(
-                  "assets/icons/searchIcon.svg",
-                  fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                    theme.colorScheme.primaryFixed,
-                    BlendMode.srcIn,
+          Padding(
+
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 50),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+
+                    Container(
+                      height: 45,
+                      width: 45,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primaryFixedDim.withValues(
+                          alpha: 0.6,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Stack(
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.notifications,
+                              color: Colors.white,
+                            ),
+                          ),
+                          if (appbarState.hasNotifications)
+                            Positioned(
+                              top: 15,
+                              left: 23,
+                              child: Container(
+                                height: 7,
+                                width: 7,
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.error,
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          "سلام ${user?.fullName ?? "کاربر"} 👋",
+                          style: theme.textTheme.titleMedium!.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                          textDirection: TextDirection.rtl,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          "فقط کافیه که شروع کنی...",
+                          textDirection: TextDirection.rtl,
+                          style: theme.textTheme.bodySmall!.copyWith(
+                            color: Colors.white70,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+
+                TextField(
+                  textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.right,
+                  decoration: InputDecoration(
+                    hintText: "جستجو کن ....",
+                    hintStyle: theme.textTheme.bodyMedium!.copyWith(
+                      color: Colors.grey,
+                    ),
+                    hintTextDirection: TextDirection.rtl,
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: SvgPicture.asset(
+                        "assets/icons/searchIcon.svg",
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(
+                          theme.colorScheme.primaryFixed,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 0,
+                    ),
                   ),
                 ),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 0,
-              ),
+              ],
             ),
           ),
         ],
