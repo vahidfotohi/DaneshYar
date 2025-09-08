@@ -45,4 +45,5 @@ app.*.map.json
 /android/app/release
 # Custom ignored files
 # Ignore API endpoints configuration
-lib/core/constants/api_endpoints.dart
+
+.env
