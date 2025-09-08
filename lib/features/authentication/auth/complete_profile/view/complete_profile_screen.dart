@@ -25,7 +25,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
   void initState() {
     super.initState();
     Future.microtask(
-      () => ref
+          () => ref
           .read(completeProfileViewmodelProvider.notifier)
           .setPhoneNumber(widget.phoneNumber),
     );
@@ -35,22 +35,19 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
   Widget build(BuildContext context) {
     final profileState = ref.watch(completeProfileViewmodelProvider);
     final profileNotifier = ref.read(completeProfileViewmodelProvider.notifier);
+
     ref.listen<CompleteProfileState>(completeProfileViewmodelProvider, (
-      previous,
-      next,
-    ) {
-      developer.log(
-        "Listener detected a state change. New isCompleted flag: ${next.isCompleted}",
-      );
+        previous,
+        next,
+        ) {
       if (next.isCompleted) {
-        developer.log("Navigating to main screen...");
         Navigator.pushReplacementNamed(context, AppRoute.mainScreen);
       }
-      if (next.hasError) {
+      if (next.hasError && next.errorMessage != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              AppStrings.completeProfileSnackBarText,
+              next.errorMessage!,
               textAlign: TextAlign.right,
               textDirection: TextDirection.rtl,
             ),
@@ -59,35 +56,45 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
         );
       }
     });
+
     final theme = Theme.of(context);
-    final themeColor = theme.colorScheme;
+
     return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.fromLTRB(16, 120, 16, 24),
-        decoration: BoxDecoration(color: themeColor.surfaceBright),
-        child: Column(
-          children: [
-            const _HeaderSection(),
-            const SizedBox(height: 54),
-
-            _ProfileAvatar(
-              imagePath: profileState.imagePath,
-              onTap: profileNotifier.pickImage,
-            ),
-            const SizedBox(height: 32),
-
-            _FullNameTextField(
-              onChanged: (value) => profileNotifier.updateFullName(value),
-            ),
-            const Spacer(),
-
-            _SubmitButton(
-              isLoading: profileState.isLoading,
-              isEnabled: profileState.fullName.length >= 3,
-              onPressed: profileNotifier.submitProfile,
-            ),
-            const SizedBox(height: 12),
-          ],
+      backgroundColor: theme.colorScheme.surface,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            children: [
+              Expanded(
+                // ۱. بخش اسکرول شونده برای جلوگیری از سرریز
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 80), // فاصله از بالای صفحه
+                      const _HeaderSection(),
+                      const SizedBox(height: 54),
+                      _ProfileAvatar(
+                        imagePath: profileState.imagePath,
+                        onTap: profileNotifier.pickImage,
+                      ),
+                      const SizedBox(height: 32),
+                      _FullNameTextField(
+                        onChanged: (value) => profileNotifier.updateFullName(value),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // ۲. دکمه در پایین صفحه باقی می‌ماند
+              _SubmitButton(
+                isLoading: profileState.isLoading,
+                isEnabled: profileState.fullName.length >= 3,
+                onPressed: profileNotifier.submitProfile,
+              ),
+              const SizedBox(height: 24), // فاصله از پایین صفحه
+            ],
+          ),
         ),
       ),
     );
@@ -103,20 +110,25 @@ class _HeaderSection extends StatelessWidget {
     final themeData = Theme.of(context).textTheme;
     return Column(
       children: [
-        Text(AppStrings.completeProfileHeaderText, style: themeData.headlineMedium),
+        Text(
+          AppStrings.completeProfileHeaderText,
+          style: themeData.headlineMedium,
+          textAlign: TextAlign.right,
+          textDirection: TextDirection.rtl,
+        ),
         const SizedBox(height: 10),
         Text(
           AppStrings.completeProfileHeaderText2,
-          style: themeData.labelSmall!.copyWith(color: AppColors.lightBorder),
+          style: themeData.bodySmall!.copyWith(color: AppColors.lightBorder),
           textDirection: TextDirection.rtl,
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.center, // چینش وسط
         ),
       ],
     );
   }
 }
 
-/// HeaderSection
+/// ProfileAvatar
 class _ProfileAvatar extends StatelessWidget {
   final String? imagePath;
   final VoidCallback onTap;
@@ -132,9 +144,8 @@ class _ProfileAvatar extends StatelessWidget {
         backgroundImage: imagePath != null
             ? FileImage(File(imagePath!))
             : const AssetImage(
-                    "assets/images/completeProfile/ChangeProfile.png",
-                  )
-                  as ImageProvider,
+          "assets/images/completeProfile/ChangeProfile.png",
+        ) as ImageProvider,
         child: GestureDetector(
           onTap: onTap,
           child: const Align(
@@ -151,8 +162,6 @@ class _ProfileAvatar extends StatelessWidget {
   }
 }
 
-/// Profile Avatar
-
 /// FullName Text Field
 class _FullNameTextField extends StatelessWidget {
   final ValueChanged<String> onChanged;
@@ -163,13 +172,12 @@ class _FullNameTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.stretch, // کشیده شدن در عرض
       children: [
         Text(
           AppStrings.completeProfileInputLabel,
-          style: theme.textTheme.titleSmall!.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: theme.textTheme.titleMedium,
+          textAlign: TextAlign.right, // ۳. راست‌چین کردن لیبل
         ),
         const SizedBox(height: 8),
         TextField(
@@ -185,9 +193,7 @@ class _FullNameTextField extends StatelessWidget {
   }
 }
 
-/// FullName Text Field
-
-/// Submit Complete Profile
+/// Submit Button
 class _SubmitButton extends StatelessWidget {
   final bool isLoading;
   final bool isEnabled;
@@ -212,5 +218,3 @@ class _SubmitButton extends StatelessWidget {
     );
   }
 }
-
-/// Submit Complete Profile

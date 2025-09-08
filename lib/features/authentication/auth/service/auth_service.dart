@@ -108,7 +108,7 @@ class AuthService {
     developer.log("in auth service --> completeProfile ");
     final fromData = FormData.fromMap({
       'fullname': request.fullName,
-      if (request.avatar != null && request.avatar!.isEmpty)
+      if (request.avatar != null && request.avatar!.isNotEmpty)
         'avatar': await MultipartFile.fromFile(request.avatar!),
     });
     developer.log("form data : $fromData");

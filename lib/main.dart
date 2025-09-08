@@ -9,7 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final container = ProviderContainer();
   await container.read(userProvider.notifier).loadUserFromPrefs();
-  await container.read(themeNotifierProvider.notifier);
+   container.read(themeNotifierProvider.notifier);
 
   runApp(UncontrolledProviderScope(container: container, child: const MyApp()));
 }
@@ -19,7 +19,6 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 3. Watch the theme provider
     final themeMode = ref.watch(themeNotifierProvider);
 
     return MaterialApp(
