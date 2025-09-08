@@ -1,36 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ThemeProvider extends ChangeNotifier {
-  Brightness _brightness;
+// 1. Provider
+final themeNotifierProvider = NotifierProvider<ThemeNotifier, ThemeMode>(() {
+  return ThemeNotifier();
+});
 
-  ThemeProvider(this._brightness);
+// 2. Notifier
+class ThemeNotifier extends Notifier<ThemeMode> {
+  static const _themePrefsKey = 'themeMode';
 
-  Brightness get brightness => _brightness;
+  @override
+  ThemeMode build() {
+    // Load the theme mode from storage when the provider is first created
+    _loadThemeFromPrefs();
+    return ThemeMode.light; // Default value
+  }
 
-  void updateBrightness(Brightness brightness) {
-    _brightness = brightness;
-    _updateSystemUi();
-    notifyListeners();
+  Future<void> _loadThemeFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final themeIndex = prefs.getInt(_themePrefsKey);
+    if (themeIndex != null) {
+      state = ThemeMode.values[themeIndex];
+    }
+  }
+
+  Future<void> _saveThemeToPrefs(ThemeMode themeMode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_themePrefsKey, themeMode.index);
   }
 
   void toggleTheme() {
-    _brightness = (_brightness == Brightness.dark)
-        ? Brightness.light
-        : Brightness.dark;
-    _updateSystemUi();
-    notifyListeners();
+    state = state == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    _saveThemeToPrefs(state);
   }
 
-  void _updateSystemUi() {
-    bool isDark = _brightness == Brightness.dark;
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
-        systemNavigationBarColor: isDark ? Colors.black : Colors.white,
-        statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-      ),
-    );
+  void setTheme(ThemeMode themeMode) {
+    state = themeMode;
+    _saveThemeToPrefs(state);
   }
 }
