@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:daneshyar/core/utils/keyboard.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
-import '../../features/home/home_view/home_screen.dart';
+import '../../features/home/view/home_screen.dart';
 
 class MainBottomNav extends StatefulWidget {
   const MainBottomNav({super.key});
@@ -33,7 +33,7 @@ class _MainBottomNavState extends State<MainBottomNav> {
     // استایل متن برای آیتم‌های نوار ناوبری
     final navBarTextStyle = textTheme.bodySmall?.copyWith(
       fontWeight: FontWeight.w600,
-      color: colorScheme.onSurfaceVariant,
+      color: colorScheme.primaryFixed,
     );
 
     return [
@@ -51,13 +51,16 @@ class _MainBottomNavState extends State<MainBottomNav> {
         ),
         title: "تنظیمات",
         textStyle: navBarTextStyle,
-        activeColorPrimary: colorScheme.primary,
+        activeColorPrimary: colorScheme.primaryFixed,
         inactiveColorPrimary: colorScheme.onSurfaceVariant,
       ),
       PersistentBottomNavBarItem(
         icon: SvgPicture.asset(
           'assets/icons/conversation.svg',
-          colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
+          colorFilter: ColorFilter.mode(
+            colorScheme.primaryFixed,
+            BlendMode.srcIn,
+          ),
         ),
         inactiveIcon: SvgPicture.asset(
           'assets/icons/conversation.svg',
@@ -68,13 +71,16 @@ class _MainBottomNavState extends State<MainBottomNav> {
         ),
         title: "گفتگو",
         textStyle: navBarTextStyle,
-        activeColorPrimary: colorScheme.primary,
+        activeColorPrimary: colorScheme.primaryFixed,
         inactiveColorPrimary: colorScheme.onSurfaceVariant,
       ),
       PersistentBottomNavBarItem(
         icon: SvgPicture.asset(
           'assets/icons/favorite.svg',
-          colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
+          colorFilter: ColorFilter.mode(
+            colorScheme.primaryFixed,
+            BlendMode.srcIn,
+          ),
         ),
         inactiveIcon: SvgPicture.asset(
           'assets/icons/favorite.svg',
@@ -85,13 +91,16 @@ class _MainBottomNavState extends State<MainBottomNav> {
         ),
         title: "علاقه‌مندی",
         textStyle: navBarTextStyle,
-        activeColorPrimary: colorScheme.primary,
+        activeColorPrimary: colorScheme.primaryFixed,
         inactiveColorPrimary: colorScheme.onSurfaceVariant,
       ),
       PersistentBottomNavBarItem(
         icon: SvgPicture.asset(
           'assets/icons/courses.svg',
-          colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
+          colorFilter: ColorFilter.mode(
+            colorScheme.primaryFixed,
+            BlendMode.srcIn,
+          ),
         ),
         inactiveIcon: SvgPicture.asset(
           'assets/icons/courses.svg',
@@ -102,13 +111,16 @@ class _MainBottomNavState extends State<MainBottomNav> {
         ),
         title: "دوره ها",
         textStyle: navBarTextStyle,
-        activeColorPrimary: colorScheme.primary,
+        activeColorPrimary: colorScheme.primaryFixed,
         inactiveColorPrimary: colorScheme.onSurfaceVariant,
       ),
       PersistentBottomNavBarItem(
         icon: SvgPicture.asset(
           'assets/icons/home.svg',
-          colorFilter: ColorFilter.mode(colorScheme.primary, BlendMode.srcIn),
+          colorFilter: ColorFilter.mode(
+            colorScheme.primaryFixed,
+            BlendMode.srcIn,
+          ),
         ),
         inactiveIcon: SvgPicture.asset(
           'assets/icons/home.svg',
@@ -119,7 +131,7 @@ class _MainBottomNavState extends State<MainBottomNav> {
         ),
         title: "خانه",
         textStyle: navBarTextStyle,
-        activeColorPrimary: colorScheme.primary,
+        activeColorPrimary: colorScheme.primaryFixed,
         inactiveColorPrimary: colorScheme.onSurfaceVariant,
       ),
     ];

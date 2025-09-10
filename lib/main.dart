@@ -1,14 +1,13 @@
 import 'package:daneshyar/core/theme/app_theme.dart';
 import 'package:daneshyar/core/theme/app_theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/routes/app_route.dart';
 import 'features/authentication/user/provider/user_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+  // await dotenv.load(fileName: ".env");
   final container = ProviderContainer();
   await container.read(userProvider.notifier).loadUserFromPrefs();
   await container.read(themeNotifierProvider.notifier).loadTheme();

@@ -47,5 +47,3 @@ app.*.map.json
 
 # Ignore API endpoints configuration
 lib/core/constants/api_endpoints.dart
-
-.env
