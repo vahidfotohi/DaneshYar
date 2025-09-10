@@ -2,7 +2,6 @@ import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:daneshyar/features/authentication/auth/complete_profile/model/complete_profile_request.dart';
-import 'package:daneshyar/features/authentication/auth/login/provider/send_code_provider.dart';
 import 'package:daneshyar/features/authentication/auth/repository/auth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';

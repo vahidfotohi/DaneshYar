@@ -271,7 +271,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
         ),
         appBar: otpState.isLoading
             ? PreferredSize(
-                preferredSize: Size.fromHeight(20),
+                preferredSize: const Size.fromHeight(20),
                 child: LinearProgressIndicator(
                   color: theme.colorScheme.primaryFixed,
                 ),
