@@ -1,10 +1,10 @@
-import 'package:daneshyar/features/home/category/view/widgets/all_categories_screen.dart';
 import 'package:daneshyar/features/onboarding/view/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../features/authentication/auth/complete_profile/view/complete_profile_screen.dart';
 import '../../features/authentication/auth/login/view/send_code_screen.dart';
 import '../../features/authentication/auth/otp/view/otp_screen.dart';
+import '../../features/category/view/widgets/all_categories_screen.dart';
 import '../../initial_decider_screen.dart';
 import 'main_bottom_nav.dart';
 
@@ -74,12 +74,12 @@ class AppRoute {
         }
         final phoneNumber = args['phoneNumber'] as String?;
         final loginCode = args['loginCode'] as String?;
-        if (phoneNumber == null || loginCode == null ) {
+        if (phoneNumber == null || loginCode == null) {
           return _errorRoute("Arguments is missing.");
         }
         return MaterialPageRoute(
           builder: (_) =>
-              OtpScreen(phoneNumber: phoneNumber, loginCode: loginCode ),
+              OtpScreen(phoneNumber: phoneNumber, loginCode: loginCode),
         );
       case '/mainScreen':
         return MaterialPageRoute(builder: (_) => const MainBottomNav());

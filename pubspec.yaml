@@ -97,6 +97,7 @@ flutter:
     - assets/images/completeProfile/
     - assets/images/home/
     - assets/images/home/categories/
+    - assets/images/home/my_course/
     - assets/icons/
 
   fonts:

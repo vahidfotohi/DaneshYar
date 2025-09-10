@@ -1,4 +1,5 @@
 import 'package:daneshyar/features/home/view/widgets/home_page_shimmer_skeleton.dart';
+import 'package:daneshyar/features/mentor/view/popular_mentors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../authentication/appbar/view/home_appbar.dart';
@@ -39,7 +40,7 @@ class HomeScreen extends ConsumerWidget {
                 SizedBox(height: 0),
                 PopularCourses(),
                 SizedBox(height: 24),
-                // const TopMentorsSection(),
+                PopularMentors(),
               ],
             ),
           );

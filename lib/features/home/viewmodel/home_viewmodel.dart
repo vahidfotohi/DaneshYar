@@ -3,8 +3,8 @@ import 'package:daneshyar/features/mentor/provider/mentor_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../category/provider/category_provider.dart';
 import '../../courses/provider/course_provider.dart';
-import '../home/home_state.dart';
 import '../repository/home_repository.dart';
+import '../state/home_state.dart';
 
 class HomeViewmodel extends StateNotifier<HomeState> {
   final HomeRepository _homeRepository;

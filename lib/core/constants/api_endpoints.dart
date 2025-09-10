@@ -1,7 +1,6 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ApiEndpoints {
-  static final String baseUrl = dotenv.env['BASE_URL']!;
+  static final String baseUrl =  'https://cypher.shirzadpic.com/api';
 
   static const String sendOtp = '/client/sendCode';
   static const String verifyOtp = '/client/login';
@@ -10,6 +9,8 @@ class ApiEndpoints {
   static const String categories = '/category';
   static const String categoriesCourses = '/category/courses';
   static const String home = '/main';
+  static const String courseDetails = '/course';
+  static const String mentorDetails = '/mentor/getMentor';
 
 
 

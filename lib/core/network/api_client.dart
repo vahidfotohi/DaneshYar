@@ -1,10 +1,11 @@
 import 'package:daneshyar/core/constants/api_endpoints.dart';
-import 'package:daneshyar/features/home/category/servise/category_service.dart';
-import 'package:daneshyar/features/home/courses/service/course_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../../features/authentication/auth/service/auth_service.dart';
-import '../../features/home/home_service/home_service.dart';
+import '../../features/category/servise/category_service.dart';
+import '../../features/courses/service/course_service.dart';
+import '../../features/home/service/home_service.dart';
+import '../../features/mentor/service/mentor_service.dart';
 import 'auth_interceptor.dart';
 import 'token_storage.dart';
 
@@ -20,6 +21,7 @@ class ApiClient {
   late final CategoryService _categoryService;
   late final CourseService _courseService;
   late final HomeService _homeService;
+  late final MentorService _mentoService;
 
   ApiClient._internal() {
     _storage = SecureTokenStorage();
@@ -52,6 +54,7 @@ class ApiClient {
     _categoryService = CategoryService(dio);
     _courseService = CourseService(dio);
     _homeService = HomeService(dio);
+    _mentoService = MentorService(dio);
 
     // لاگ فقط در Debug
     if (kDebugMode) {
@@ -83,6 +86,8 @@ class ApiClient {
   CourseService get courseService => _courseService;
 
   HomeService get homeService => _homeService;
+
+  MentorService get mentorService => _mentoService;
 
   Future<Response<T>> get<T>(
     String path, {

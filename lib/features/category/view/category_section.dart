@@ -1,3 +1,4 @@
+import 'package:daneshyar/core/constants/constants.dart';
 import 'package:daneshyar/core/constants/strings.dart';
 import 'package:daneshyar/core/routes/app_route.dart';
 import 'package:flutter/material.dart';
@@ -9,14 +10,16 @@ class CategorySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final categoryState = ref.watch(categoryProvider);
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
+    final categoryState = ref.watch(categoryProvider);
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               TextButton(
@@ -26,14 +29,14 @@ class CategorySection extends ConsumerWidget {
                     rootNavigator: true,
                   ).pushNamed(AppRoute.allCategories);
                 },
-                child: const Text(
+                child:  const Text(
                   AppStrings.categoryShowAll,
-                  style: TextStyle(fontSize: 13, color: Colors.grey),
+                  style: TextStyle(fontSize: 13, color:AppColors.lightTextSecondary),
                 ),
               ),
               Text(
                 AppStrings.categoryTitle,
-                style: theme.textTheme.headlineSmall!.copyWith(
+                style: textTheme.headlineSmall!.copyWith(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -41,81 +44,85 @@ class CategorySection extends ConsumerWidget {
               ),
             ],
           ),
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          height: 130,
-          child: Builder(
-            builder: (context) {
-              final categories = categoryState.categories;
-              return ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                scrollDirection: Axis.horizontal,
-                reverse: true,
-                itemCount: categories.length,
-                separatorBuilder: (BuildContext _, int _) =>
-                    const SizedBox(width: 12),
-                itemBuilder: (BuildContext context, int index) {
-                  final item = categories[index];
-                  return Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          height: 84,
-                          width: 84,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: theme.colorScheme.primaryFixedDim,
-                            ),
-                          ),
-                          child: Container(
-                            height: 64,
-                            width: 64,
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 130,
+            child: Builder(
+              builder: (context) {
+                final categories = categoryState.categories;
+                return ListView.separated(
+                  // padding: const EdgeInsets.symmetric(horizontal: 16),
+                  scrollDirection: Axis.horizontal,
+                  reverse: true,
 
+                  itemCount: categories.length,
+                  separatorBuilder: (BuildContext _, int _) =>
+                      const SizedBox(width: 12),
+                  itemBuilder: (BuildContext context, int index) {
+
+                    final item = categories[index];
+                    return Column(
+                      children: [
+                        GestureDetector(
+
+                          onTap: () {},
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            height: 84,
+                            width: 84,
                             decoration: BoxDecoration(
+
                               shape: BoxShape.circle,
-                              color: theme.colorScheme.primaryFixed.withValues(
-                                alpha: 0.1,
+                              border: Border.all(
+                                color: colorScheme.primaryFixedDim,
                               ),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Image.network(
-                                item.icon,
-                                height: 54,
-                                width: 54,
-                                fit: BoxFit.cover,
-                                loadingBuilder:
-                                    (context, child, loadingProgress) {
-                                      return loadingProgress == null
-                                          ? child
-                                          : const Center(child: null);
-                                    },
+                            child: Container(
+                              height: 64,
+                              width: 64,
 
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(
-                                    Icons.image_not_supported_rounded,
-                                    color: Colors.grey,
-                                  );
-                                },
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: colorScheme.primaryFixed.withValues(
+                                  alpha: 0.1,
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Image.network(
+                                  item.icon,
+                                  height: 54,
+                                  width: 54,
+                                  fit: BoxFit.cover,
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                        return loadingProgress == null
+                                            ? child
+                                            : const Center(child: null);
+                                      },
+
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const Icon(
+                                      Icons.image_not_supported_rounded,
+                                      color: Colors.grey,
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(item.title, style: theme.textTheme.bodyLarge),
-                    ],
-                  );
-                },
-              );
-            },
+                        const SizedBox(height: 8),
+                        Text(item.title, style: textTheme.bodyLarge),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

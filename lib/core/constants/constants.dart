@@ -18,12 +18,14 @@ class AppColors {
 
   //light theme colors
   static const Color lightText = Color(0xff212121);
+  static const Color lightTextSecondary = Color(0xFFADADAD);
   static const Color lightInputFill = Color(0xffFDFDFD);
   static const Color lightBorder = Color(0xffADADAD);
   static const Color lightBackground = Color(0xffFAFAFA);
   static const Color lightFocusedBorder = Color(0xFF246BFD);
   static const Color lightNavigationBackground = Color(0xFFFDFDFD);
   static const Color lightNavigationBackgroundSelectedItem = Color(0xFFF1F1F1);
+  static const Color listCategory = Color(0xFFEDEDED);
 
 
 }

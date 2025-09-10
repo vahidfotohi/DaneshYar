@@ -36,6 +36,11 @@ class AppStrings {
   static const categoryTitle = "دسته بندی ها";
   static const categoryError = "خطا در دریافت دسته بندی ها";
   static const categoryShowAll = "مشاهده همه";
-
   // category section
+
+//mentors section
+  static const mentorTitle = "دسته بندی ها";
+  static const mentorError = "خطا در دریافت دسته بندی ها";
+  static const mentorShowAll = "مشاهده همه";
+//mentors section
 }
