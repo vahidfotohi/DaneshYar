@@ -43,16 +43,16 @@ class Data {
     required this.expiresIn,
   });
 
-  static fromJson(json) {
+  factory Data.fromJson(Map<String, dynamic> json) {
     return Data(
-      type: json['type'] ?? 'register',
+      type: json['type'] ?? '',
       accessToken: json['access_token'] ?? '',
       tokenType: json['token_type'] ?? '',
       expiresIn: json['expires_in'] ?? 0,
     );
   }
 
-  toJson() {
+  Map<String, Object> toJson() {
     return {
       'type': type,
       'access_token': accessToken,

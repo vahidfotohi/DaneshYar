@@ -33,7 +33,7 @@ class Data {
     );
   }
 
-  toJson() {
+  Map<String, String> toJson() {
     return {'login_code': loginCode};
   }
 }

@@ -47,7 +47,7 @@ class Data {
     required this.registered,
   });
 
-  static fromJson(Map<String, dynamic> json) {
+  static Data fromJson(Map<String, dynamic> json) {
     return Data(
       id: json['id'] as int,
       fullName: json['fullname'] as String,
@@ -58,7 +58,7 @@ class Data {
     );
   }
 
-  toJson() {
+  Map<String, Object> toJson() {
     return {
       'id': id,
       'fullname': fullName,
