@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../model/course_model.dart';
+import '../model/popular/popular_courses_model.dart';
 import '../repository/course_repository.dart';
 import '../state/course_state.dart';
 
@@ -9,7 +9,7 @@ class CourseViewmodel extends StateNotifier<CourseState> {
 
   CourseViewmodel(this.repository) : super(CourseState.initial());
 
-  void initializeData(List<CourseModel> courses) {
+  void initializeData(List<PopularCoursesModel> courses) {
     state = state.copyWith(courses: courses, isLoading: false, hasError: false);
   }
 
@@ -30,7 +30,7 @@ class CourseViewmodel extends StateNotifier<CourseState> {
     }
   }
 
-  List<CourseModel> get popularCourses => state.courses
+  List<PopularCoursesModel> get popularCourses => state.courses
       .where((course) => course.suggested == Suggested.suggested)
       .toList();
 

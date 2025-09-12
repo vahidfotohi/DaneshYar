@@ -1,14 +1,16 @@
 import 'package:daneshyar/core/network/api_client.dart';
 import 'package:daneshyar/core/network/error_mapper.dart';
 import 'package:dio/dio.dart';
-import '../model/course_model.dart';
+
+import '../model/base/course_info.dart';
+import '../model/popular/popular_courses_model.dart';
 
 class CourseRepository {
   final ApiClient _apiClient;
 
   CourseRepository(this._apiClient);
 
-  Future<List<CourseModel>> getAllCourses() async {
+  Future<List<PopularCoursesModel>> getAllCourses() async {
     try {
       final response = await _apiClient.courseService.getAllCourses();
       if (response.status) {
@@ -18,16 +20,18 @@ class CourseRepository {
             suggestedCourse = Suggested.suggested;
           }
 
-          return CourseModel(
-            id: course.id.toString(),
-            title: course.title,
-            isMarked: false,
+          return PopularCoursesModel(
+            courseInfo: CourseInfo(
+              id: course.id,
+              title: course.title,
+              cover: course.cover,
+              mentorName: course.mentor.name,
+              isMarked: false,
+            ),
             price: course.price,
-            offerPrice: course.discountPrice?.toString(),
-            cover: "storage/${course.cover}",
             suggested: suggestedCourse,
-            mentorName: course.mentor.name,
-            star: '4.5',
+            offerPrice: course.price,
+            star: "4.6",
           );
         }).toList();
       } else {

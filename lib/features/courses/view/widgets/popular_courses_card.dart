@@ -1,9 +1,9 @@
 import 'package:daneshyar/core/constants/constants.dart';
 import 'package:flutter/material.dart';
-import '../../model/course_model.dart';
+import '../../model/popular/popular_courses_model.dart';
 
 class PopularCoursesCard extends StatelessWidget {
-  final CourseModel course;
+  final PopularCoursesModel course;
 
   const PopularCoursesCard({super.key, required this.course});
 
@@ -17,8 +17,9 @@ class PopularCoursesCard extends StatelessWidget {
         color: Theme.of(context).colorScheme.surfaceBright,
         elevation: 3,
         margin: EdgeInsets.zero,
+        clipBehavior: Clip.antiAlias,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Stack(
               children: [
@@ -28,7 +29,7 @@ class PopularCoursesCard extends StatelessWidget {
                     topLeft: Radius.circular(12),
                   ),
                   child: Image.network(
-                    course.cover,
+                    course.courseInfo.cover,
                     width: double.infinity,
                     height: 100,
                     fit: BoxFit.cover,
@@ -56,7 +57,7 @@ class PopularCoursesCard extends StatelessWidget {
                       color: theme.colorScheme.surfaceBright,
                       borderRadius: BorderRadius.circular(2),
                     ),
-                    child: course.isMarked
+                    child: course.courseInfo.isMarked
                         ? Icon(
                             Icons.bookmark_rounded,
                             color: theme.colorScheme.primaryFixed,
@@ -75,7 +76,7 @@ class PopularCoursesCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    course.title,
+                    course.courseInfo.title,
                     style: theme.textTheme.titleLarge!.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -103,7 +104,7 @@ class PopularCoursesCard extends StatelessWidget {
                       ),
                       const Spacer(),
                       Text(
-                        course.mentorName,
+                        course.courseInfo.mentorName,
                         style: theme.textTheme.bodyMedium!.copyWith(
                           color: Colors.grey.shade500,
                         ),

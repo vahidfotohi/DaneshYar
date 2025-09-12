@@ -1,6 +1,7 @@
 import 'package:daneshyar/core/constants/api_endpoints.dart';
 import 'package:dio/dio.dart';
-import '../model/course_response.dart';
+
+import '../model/responses/course_response.dart';
 
 class CourseService {
   final Dio _dio;

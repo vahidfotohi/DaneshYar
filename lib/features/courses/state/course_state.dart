@@ -1,11 +1,10 @@
-
-import '../model/course_model.dart';
+import '../model/popular/popular_courses_model.dart';
 
 class CourseState {
   final bool isLoading;
   final bool hasError;
   final String? errorMessage;
-  final List<CourseModel> courses;
+  final List<PopularCoursesModel> courses;
 
   const CourseState({
     this.isLoading = false,
@@ -27,7 +26,7 @@ class CourseState {
     bool? isLoading,
     bool? hasError,
     String? errorMessage,
-    List<CourseModel>? courses,
+    List<PopularCoursesModel>? courses,
   }) {
     return CourseState(
       isLoading: isLoading ?? this.isLoading,

@@ -6,21 +6,9 @@ import 'package:dio/dio.dart';
 import 'package:intl/intl.dart' as intl;
 import '../../../core/constants/api_endpoints.dart';
 import '../../category/model/category_model.dart';
-import '../../courses/model/course_model.dart';
-
-class CleanHomeData {
-  final UserModel user;
-  final List<MentorModel> mentors;
-  final List<CategoryModel> categories;
-  final List<CourseModel> courses;
-
-  CleanHomeData({
-    required this.user,
-    required this.categories,
-    required this.courses,
-    required this.mentors,
-  });
-}
+import '../../courses/model/base/course_info.dart';
+import '../../courses/model/popular/popular_courses_model.dart';
+import '../model/clean_home_data.dart';
 
 class HomeRepository {
   final ApiClient _apiClient;
@@ -37,7 +25,8 @@ class HomeRepository {
           id: homeData.customer.id.toString(),
           fullName: homeData.customer.fullname,
           phone: homeData.customer.phone,
-          avatar: homeData.customer.avatar,
+          avatar:
+              '${ApiEndpoints.baseUrl}/storage/}${homeData.customer.avatar}',
         );
 
         final categories = homeData.categories
@@ -50,25 +39,27 @@ class HomeRepository {
             )
             .toList();
 
-        final courses = homeData.courses.map((course) {
+        final popularCourses = homeData.courses.map((courseData) {
           final formatter = intl.NumberFormat.decimalPattern();
           String coursePrice = formatter
-              .format(int.parse(course.price))
+              .format(int.parse(courseData.price))
               .replaceAll(',', '/');
-          Suggested suggestedCourse = Suggested.none;
-          if (course.flagPublished == "1") {
-            suggestedCourse = Suggested.suggested;
-          }
-          return CourseModel(
-            id: course.id.toString(),
-            title: course.title,
-            mentorName: course.mentor.name,
-            cover: "${ApiEndpoints.baseUrl}/storage/${course.cover}",
-            price: coursePrice,
-            suggested: suggestedCourse,
+          final courseInfo = CourseInfo(
+            id: courseData.id,
+            title: courseData.title,
+            cover: "${ApiEndpoints.baseUrl}/storage/${courseData.cover}",
+            mentorName: courseData.mentor.name,
             isMarked: false,
-            offerPrice: course.discountPrice,
-            star: '4.5',
+          );
+
+          return PopularCoursesModel(
+            courseInfo: courseInfo,
+            price: coursePrice,
+            suggested: courseData.flagPublished == '1'
+                ? Suggested.suggested
+                : Suggested.none,
+            offerPrice: courseData.discountPrice,
+            star: '4.6',
           );
         }).toList();
 
@@ -92,7 +83,7 @@ class HomeRepository {
             .toList();
 
         return CleanHomeData(
-          courses: courses,
+          popularCourses: popularCourses,
           categories: categories,
           user: user,
           mentors: mentors,

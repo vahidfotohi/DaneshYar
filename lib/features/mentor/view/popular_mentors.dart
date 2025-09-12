@@ -3,7 +3,6 @@ import 'package:daneshyar/core/constants/strings.dart';
 import 'package:daneshyar/features/mentor/provider/mentor_provider.dart';
 import 'package:daneshyar/features/mentor/view/widgets/popular_mentor_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PopularMentors extends ConsumerWidget {
@@ -13,7 +12,7 @@ class PopularMentors extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
-    final colorScheme = theme.colorScheme;
+    // final colorScheme = theme.colorScheme;
     final mentorState = ref.watch(mentorProvider);
     return Container(
       padding: const EdgeInsets.all(16),

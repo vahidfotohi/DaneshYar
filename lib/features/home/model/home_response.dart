@@ -1,6 +1,3 @@
-// این مدل برای داده‌های خام کاربر، دسته‌بندی و دوره از سرور است
-// که بعداً در Repository به مدل‌های تمیز UI تبدیل می‌شوند.
-
 class HomeResponse {
   final bool status;
   final HomeData? data;
@@ -14,7 +11,7 @@ class HomeResponse {
       data: json['status'] == true && json['data'] != null
           ? HomeData.fromJson(json['data'])
           : null,
-      errorMessage: json['error_message'],
+      errorMessage: json['error_message'] as String?,
     );
   }
 }
@@ -25,8 +22,6 @@ class HomeData {
   final List<CourseData> courses;
   final List<MentorData> mentors;
 
-  // شما می‌توانید برای mentors و my_courses هم مدل‌های مشابه بسازید
-
   HomeData({
     required this.customer,
     required this.categories,
@@ -35,36 +30,19 @@ class HomeData {
   });
 
   factory HomeData.fromJson(Map<String, dynamic> json) {
-    var categoryList = <CategoryData>[];
-    if (json['categories'] is List) {
-      categoryList = (json['categories'] as List)
-          .map((cat) => CategoryData.fromJson(cat))
-          .toList();
-    }
+    // استفاده از List.from و map برای خواندن امن لیست‌ها
+    final categoriesList = (json['categories'] as List<dynamic>?) ?? [];
+    final coursesList = (json['courses'] as List<dynamic>?) ?? [];
+    final mentorsList = (json['mentors'] as List<dynamic>?) ?? [];
 
-    var courseList = <CourseData>[];
-    if (json['courses'] is List) {
-      courseList = (json['courses'] as List)
-          .map((course) => CourseData.fromJson(course))
-          .toList();
-    }
-
-    var mentorList = <MentorData>[];
-    if (json['mentors'] is List) {
-      mentorList = (json['mentors'] as List)
-          .map((mentor) => MentorData.fromJson(mentor))
-          .toList();
-    }
     return HomeData(
-      customer: CustomerData.fromJson(json['customer']),
-      categories: categoryList,
-      courses: courseList,
-      mentors: mentorList,
+      customer: CustomerData.fromJson(json['customer'] ?? {}),
+      categories: categoriesList.map((cat) => CategoryData.fromJson(cat)).toList(),
+      courses: coursesList.map((course) => CourseData.fromJson(course)).toList(),
+      mentors: mentorsList.map((mentor) => MentorData.fromJson(mentor)).toList(),
     );
   }
 }
-
-// مدل‌های داده خام از سرور
 
 class CustomerData {
   final int id;
@@ -142,12 +120,12 @@ class CourseData {
       flagPublished: json['flag_published'] ?? '0',
       title: json['title'] ?? '',
       cover: json['cover'] ?? '',
-      price: json['price'] ?? '0',
+      price: json['price']?.toString() ?? '0',
       mentor: MentorData.fromJson(json['mentor'] ?? {}),
       tizer: json['tizer'] ?? '',
-      discountUntil: json['discount_until'] ?? '0',
-      discountPrice: json['discount_price'] ?? '0',
-      categoryCoursesId: json['category_courses_id'] ?? '0',
+      discountUntil: json['discount_until'] as String?, // اصلاح برای پذیرش null
+      discountPrice: json['discount_price'] as String?, // اصلاح برای پذیرش null
+      categoryCoursesId: json['category_courses_id']?.toString() ?? '0',
       flagCertification: json['flag_certification'] ?? false,
       description: json['description'] ?? '',
       level: json['level'] ?? '',
@@ -169,35 +147,37 @@ class MentorData {
   final bool verified;
   final bool active;
 
-  MentorData(
+  // ۱. استفاده از سازنده با پارامترهای نام‌گذاری شده (Named Constructor)
+  MentorData({
+    required this.id,
+    required this.name,
+    required this.avatar,
     this.bio,
-    this.wallet,
-    this.iban,
+    required this.phoneNumber,
+    required this.wallet,
+    required this.iban,
     this.creditName,
     this.description,
     this.creditNumber,
-    this.verified,
-    this.active,
-    this.id,
-    this.avatar,
-    this.phoneNumber,
-    this.name,
-  );
+    required this.verified,
+    required this.active,
+  });
 
   factory MentorData.fromJson(Map<String, dynamic> json) {
     return MentorData(
-      json['bio'] ?? '',
-      json['wallet'] ?? '',
-      json['iban'] ?? '',
-      json['credit_name'],
-      json['description'],
-      json['credit_number'],
-      json['verified'] ?? false,
-      json['active'] ?? false,
-      json['id'] ?? 0,
-      json['avatar'] ?? '',
-      json['ph'] ?? '',
-      json['name'] ?? '',
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      avatar: json['avatar'] ?? '',
+      bio: json['bio'] as String?,
+      // ۲. اصلاح اشتباه تایپی از 'ph' به 'phone_number'
+      phoneNumber: json['phone_number'] ?? '',
+      wallet: json['wallet']?.toString() ?? '',
+      iban: json['iban']?.toString() ?? '',
+      creditName: json['credit_name'] as String?,
+      description: json['description'] as String?,
+      creditNumber: json['credit_number'] as int?,
+      verified: json['verified'] ?? false,
+      active: json['active'] ?? false,
     );
   }
 }

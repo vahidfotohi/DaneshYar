@@ -21,7 +21,7 @@ class HomeViewmodel extends StateNotifier<HomeState> {
 
       ref.read(categoryProvider.notifier).initializeData(cleanData.categories);
 
-      ref.read(courseProvider.notifier).initializeData(cleanData.courses);
+      ref.read(courseProvider.notifier).initializeData(cleanData.popularCourses);
 
       ref.read(mentorProvider.notifier).initializeData(cleanData.mentors);
 
